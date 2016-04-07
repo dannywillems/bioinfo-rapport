@@ -4,19 +4,61 @@
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
 \usepackage{hyperref}
+\usepackage{graphicx}
+
 
 \usepackage{amsmath}
 \usepackage{amsthm}
 \usepackage{amssymb}
 
-\title{Rapport du projet de bio-informatique \\ 2015 - 2016}
-\author{Aline Goeminne \\ Danny Willems}
-\date{Version compilée du \today}
+\hypersetup{
+    colorlinks,
+    linkcolor={black!50!black},
+    citecolor={black!50!black},
+    urlcolor={black!80!black}
+}
 
 \begin{document}
 
-\maketitle
+\begin{titlepage}
+\begin{center}
 
-\tableofcontents
+{\Large Université de Mons}\\[1ex]
+{\Large Faculté des sciences}\\[2.5cm]
 
+\newcommand{\HRule}{\rule{\linewidth}{0.3mm}}
+% Title
+\HRule \\[0.3cm]
+{ \LARGE \bfseries Assemblage de fragments d'ADN \\[0.3cm]}
+\HRule \\[1.5cm]
+
+% Course
+\begin{center}
+\emph{Cours:} \\
+Algorithmique et bioinformatique
+\end{center}
+
+% Author
+\begin{center}
+\emph{Auteur:} \\
+Aline \textsc{Goeminne}\\
+Danny \textsc{Willems}
+\end{center}
+\vfill
+\today
+\vfill
+
+% Bottom of the page
+\begin{center}
+\begin{tabular}[t]{c c c}
+\includegraphics[height=1.5cm]{umons.jpg} &
+\hspace{0.3cm} &
+\includegraphics[height=1.5cm]{fac.jpg}
+\end{tabular}
+\end{center}~\\
+
+{\large Année académique 2015-2016}
+
+\end{center}
+\end{titlepage}
 \end{document}
