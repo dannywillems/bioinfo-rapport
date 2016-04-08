@@ -20,6 +20,39 @@
 
 \subsection{Récupération et stockage des données}
 \label{subsection:recStock}
+
+Cette étape est effectuée au travers des classes \verb|FastaReader| et \verb|Alignement|. De plus, la classe \verb|FastaWriter| est utilisée afin de récupérer le résultat du procédé visant à trouver le meilleur contig.\\
+
+La classe \verb|Alignment| permet de stocker sous forme d'un table de Bytes un fragment d'ADN. Nous prenons la convention suivante quant à la représentation des nucléotides et d'un gap:
+	\begin{center}
+		\begin{tabular}{|l|c|}
+			\hline
+			Nucléotide/Gap & Représentation \\
+			\hline
+			\hline
+			C & int 0 \\
+			\hline
+			G & int 1\\
+			\hline
+			T & int 2 \\
+			\hline
+			A & int 3 \\
+			\hline
+			Gap & int 4 \\
+			\hline
+
+		\end{tabular}
+	\end{center}
+	
+	Le fait de stocker les nucléotides sous forme de Bytes permet de réduire l'espace mémoire nécessaire.
+		
+	  Elle contient également des méthodes intéressantes telles que \textsc{complement} qui permet de complémenter une séquence d'ADN ainsi que d'autres méthodes comme \textsc{backTrack} et \textsc{semiGlobalAlignment} qui sont utiles pour l'étape décrire dans la section~\ref{subsection:semiGlobal} ou encore \textsc{arcGenerator} qui est expliquée dans la section~\ref{subsection:greedy}.\\
+	
+La classe \verb|FastaReader| permet à partir d'un \emph{fichier Fasta} de générer un liste d'objets \verb|Sequence| représentant les fragments d'ADN. \\
+
+L'opération inverse est possible grâce à la classe \verb|FastaWriter|.
+
+
 	
 
 
