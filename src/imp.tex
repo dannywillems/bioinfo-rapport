@@ -1,9 +1,32 @@
-%!TEX root=main.tex
+%!TEX root=rapport.tex
 \section{Implémentation}
+
+\subsection{Idée générale}
+
+	L'idée générale de l'alignement de séquences est de permettre à partir d'un ensemble de séquences de créer à l'aide de chevauchements approximatif un \emph{contig}. Pour se faire, notre démarche se découpe en plusieurs parties:
+	
+	\begin{description}
+		\item[Récupération et stockage des données] Afin de pouvoir former le contig souhaité, il est nécessaire de récupérer les séquences et de les stocker de manière efficaces. Cette étape est expliquée dans la section~\ref{subsection:recStock}.
+		
+		\item[Alignement semi-global] Ensuite, pour chaque paire de séquence, nous effectuons un \emph{alignement semi-global} en nous inspirant de l'algorithme vu en cours.Cette méthode nous donne ainsi l'alignement approximatif des deux séquences. Ce qui permet de prendre en compte le fait qu'il ait pu y avoir des erreurs lors du séquençage. Cette étape est expliquée dans la section~\ref{subsection:semiGlobal}.
+		
+		\item[Algorithme greedy] Une fois les alignements approximatifs calculés, il est encore nécessaire de trouver dans quel ordre ceux-ci doivent être assemblés afin de former le meilleur contig. Pour se faire, nous utilisons un \emph{algorithme greedy} qui, à partir d'un graphe permet de trouver un chemin hamiltonien afin de reconstituer le contig. Cette étape est expliquée dans la section~\ref{subsection:greedy}.
+		
+		\item[Alignement]
+		
+		\item[Consensus]
+		
+	\end{description}
+
+\subsection{Récupération et stockage des données}
+\label{subsection:recStock}
+	
 
 
 \subsection{Alignement semi-global}
+\label{subsection:semiGlobal}
 
-\subsection{UnionFind}
 
 \subsection{Algorithme greedy}
+\label{subsection:greedy}
+
