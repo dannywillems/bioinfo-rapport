@@ -59,7 +59,43 @@ L'opération inverse est possible grâce à la classe \verb|FastaWriter|.
 \subsection{Alignement semi-global}
 \label{subsection:semiGlobal}
 
+Une des premières étapes de la démarche est d'effectuer l'alignement semi-global entre deux fragments. Cette étape permet de tester la similarité entre les deux fragments que l'on veut aligner. L'alignement semi-global est implémenté dans la classe \verb|Sequence| via la fonction \textsc{semiGlobalAlignement}. Cette méthode prend deux fragments $s$ et $t$, des coûts de match, missmatch et gap  et calcule l'alignement de $s$ par rapport à $t$ et $t$ par rapport à $s$ et revoie le résultat sous forme d'une liste de \verb|SequenceAlignement|.\\
+
+Un objet de la classe \verb|SequenceAlignement| est défini de la manière suivante: le segment $s_1$ aligné avec le segment $s_2$ en supposant que le segment $s_1$ est le segment le plus à \og gauche \fg. De plus, la longueur du préfix-suffix commun est stocké dans l'attribut \emph{score}.\\
+
+De plus, dans la classe \verb|Sequence| nous retrouvons la méthode \emph{arcGenerator} qui à partir de deux fragments $s_1$ et $s_2$ calcule tous les alignements possibles. C'est-à-dire, si on considère que $\overline{s_1}$ est le fragment complémentaire inversé de $s_1$, alors on calcule:\\
+\begin{itemize}
+	\item[$\bullet$] L'alignement $(s_1,s_2)$ ainsi que $(s_2,s_1)$;
+	\item[$\bullet$] L'alignement de $(\overline{s_1},s_2)$ ainsi que $(s_2, \overline{s_1})$;
+	\item[$\bullet$] L'alignement de $(s_1, \overline{s_2})$ ainsi que $(\overline{s_2},s_1)$;
+	\item[$\bullet$] L'alignement de $(\overline{s_1}, \overline{s_2})$ ainsi que $(\overline{s_2}, \overline{s_1})$.
+\end{itemize}
+$ $\\
+A partir de ces alignements nous construisons les objets \verb|Arc|. Un objet arc possède en attribut:\\
+
+\begin{itemize}
+	\item[$\bullet$] Les fragments $s_1$ et $s_2$ initiaux qui sont utilisés lors de l'alignement.
+	\item[$\bullet$] Des booléens \emph{s1Comp} et \emph{s1Comp} qui permettent de savoir si on considère le complémentaire inversé lors de l'alignement.
+	\item[$\bullet$] Les alignements \emph{s1Aligned} et \emph{s2Aligned}  résultant de l'exécution de l'algorithme d'alignement semi-global.
+\end{itemize}
+	
+Ces arcs nous permettent d'effectuer l'algorithme greedy pour trouver un chemin hamiltonien parcourant tous les fragments considérés.
+
 
 \subsection{Algorithme greedy}
 \label{subsection:greedy}
 
+Avant de nous intéresser à l'algorithme greedy en tant que tel, nous allons expliquer une structure de données \emph{Union-Find} que nous avons utilisée afin d'implémenter cet algorithme.
+
+\subsubsection{Union-Find}
+
+Une structure de donnée \og Union-Find \fg~est une structure permettant de représenter une relation d'équivalence . On peut effectuer trois opérations sur cette structure:
+\begin{itemize}
+\item[$\bullet$] L'opération \textsc{Find} permet de déterminer dans quelle classe d'équivalence se situe un élément.
+\item[$\bullet$] L'opération \textsc{Union} permet de faire l'union entre deux classes d'équivalence.
+\item[$\bullet$] L'opération \textsc{MakeSet} construit une classe d'équivalence qui ne contient qu'un seul élément
+\end{itemize}
+
+Dans l'implémentation que nous avons utilisée, chaque classe d'équivalence est représentée par un arbre pour lequel chaque noeud possède une référence vers son père. Dans un tel choix d'implémentation, la racine de chaque classe correspond au représentant de la classe d'équivalence.
+
+L'idée est que l'opération \textsc{Find} permet de retourner à la racine de l'arbre et donc de déterminer quel est le représentant de la classe d'équivalence. Pour l'opération \textsc{Union}, on rattache la racine d'une des deux classes à celle de l'autre classe. Toutefois, une telle démarche pourrait amener à des arbres fortement déséquilibrés . Afin d'éviter cela, une heuristique sur la hauteur de l'arbre est utilisée. On retient le \emph{rang} de l'arbre et à chaque fois que l'on veut faire l'union de deux arbres on considère leur rang. On attache l'arbre de rang inférieur à la racine de l'arbre de rang supérieur. Les arbres qui ne contiennent qu'un seul élément sont de rang 0 et dès que l'on effectue l'union de deux arbres de même rang, le résultat de cette union a un rang d'une unité plus grand.
