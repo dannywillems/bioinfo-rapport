@@ -4,18 +4,38 @@
 \subsection{Idée générale}
 
 	L'idée générale de l'alignement de séquences est de permettre à partir d'un ensemble de séquences de créer à l'aide de chevauchements approximatif un \emph{contig}. Pour se faire, notre démarche se découpe en plusieurs parties:
-	
+
 	\begin{description}
-		\item[Récupération et stockage des données] Afin de pouvoir former le contig souhaité, il est nécessaire de récupérer les séquences et de les stocker de manière efficaces. Cette étape est expliquée dans la section~\ref{subsection:recStock}.
-		
-		\item[Alignement semi-global] Ensuite, pour chaque paire de séquence, nous effectuons un \emph{alignement semi-global} en nous inspirant de l'algorithme vu en cours.Cette méthode nous donne ainsi l'alignement approximatif des deux séquences. Ce qui permet de prendre en compte le fait qu'il ait pu y avoir des erreurs lors du séquençage. Cette étape est expliquée dans la section~\ref{subsection:semiGlobal}.
-		
-		\item[Algorithme greedy] Une fois les alignements approximatifs calculés, il est encore nécessaire de trouver dans quel ordre ceux-ci doivent être assemblés afin de former le meilleur contig. Pour se faire, nous utilisons un \emph{algorithme greedy} qui, à partir d'un graphe permet de trouver un chemin hamiltonien afin de reconstituer le contig. Cette étape est expliquée dans la section~\ref{subsection:greedy}.
-		
+		\item[Récupération et stockage des données] Afin de pouvoir former le contig souhaité, il est nécessaire de récupérer les séquences et de les stocker de manière efficace. Cette étape est expliquée dans la section~\ref{subsection:recStock}.
+
+		\item[Alignement semi-global] Ensuite, pour chaque paire de séquence,
+			nous effectuons un \emph{alignement semi-global} en nous inspirant
+			de l'algorithme vu en cours. Cette méthode nous donne ainsi
+			l'alignement approximatif des deux séquences, ce qui permet de
+			prendre en compte le fait qu'il ait pu y avoir des erreurs lors du
+			séquençage. Si la paire est noté $(s, t)$, cette étape nous permet également de connaitre la plus
+			grande chaine qui est suffixe de $s$ et préfixe de $t$. Cette étape
+			est expliquée dans la section~\ref{subsection:semiGlobal}.
+
+		\item[Algorithme greedy] Une fois les alignements approximatifs
+			calculés, il est encore nécessaire de trouver dans quel ordre
+			ceux-ci doivent être assemblés afin de former le meilleur contig.
+			Pour se faire, nous utilisons un \emph{algorithme greedy} qui, à
+			partir d'un graphe permet de trouver un chemin hamiltonien afin de
+			reconstituer le contig. Cette étape est expliquée dans la
+			section~\ref{subsection:greedy}.
+
 		\item[Alignement]
-		
+			L'algorithme greedy nous donnant, dans l'ordre, les séquences à
+			aligner, il est nécessaire de reconstruire cet alignement en
+			ajoutant des gaps pour que chaque séquence ait la même longueur et
+			qu'on puisse calculer le consensus. Cette étape est expliquée dans
+			la section ~\ref{subsection:alignment}.
+
 		\item[Consensus]
-		
+			Maintenant que l'alignement a été réalisé, il nous faut calculer le
+			consensus en fonction de ce dernier. Cette étape est expliquée dans
+			la section ~\ref{subsection:consensus}.
 	\end{description}
 
 \subsection{Récupération et stockage des données}
@@ -43,25 +63,34 @@ La classe \verb|Alignment| permet de stocker sous forme d'un table de Bytes un f
 
 		\end{tabular}
 	\end{center}
-	
+
 	Le fait de stocker les nucléotides sous forme de Bytes permet de réduire l'espace mémoire nécessaire.
-		
+
 	  Elle contient également des méthodes intéressantes telles que \textsc{complement} qui permet de complémenter une séquence d'ADN ainsi que d'autres méthodes comme \textsc{backTrack} et \textsc{semiGlobalAlignment} qui sont utiles pour l'étape décrire dans la section~\ref{subsection:semiGlobal} ou encore \textsc{arcGenerator} qui est expliquée dans la section~\ref{subsection:greedy}.\\
-	
+
 La classe \verb|FastaReader| permet à partir d'un \emph{fichier Fasta} de générer un liste d'objets \verb|Sequence| représentant les fragments d'ADN. \\
 
 L'opération inverse est possible grâce à la classe \verb|FastaWriter|.
 
 
-	
+
 
 
 \subsection{Alignement semi-global}
 \label{subsection:semiGlobal}
 
-Une des premières étapes de la démarche est d'effectuer l'alignement semi-global entre deux fragments. Cette étape permet de tester la similarité entre les deux fragments que l'on veut aligner. L'alignement semi-global est implémenté dans la classe \verb|Sequence| via la fonction \textsc{semiGlobalAlignement}. Cette méthode prend deux fragments $s$ et $t$, des coûts de match, missmatch et gap  et calcule l'alignement de $s$ par rapport à $t$ et $t$ par rapport à $s$ et revoie le résultat sous forme d'une liste de \verb|SequenceAlignement|.\\
+Une des premières étapes de la démarche est d'effectuer l'alignement semi-global
+entre deux fragments. Cette étape permet de tester la similarité entre les deux
+fragments que l'on veut aligner. L'alignement semi-global est implémenté dans la
+classe \verb|Sequence| via la fonction \textsc{semiGlobalAlignement}. Cette
+méthode prend deux fragments $s$ et $t$, des coûts de match, missmatch et gap
+et calcule l'alignement de $s$ par rapport à $t$ et $t$ par rapport à $s$ et
+renvoie le résultat sous forme d'une liste de \verb|SequenceAlignement|.\\
 
-Un objet de la classe \verb|SequenceAlignement| est défini de la manière suivante: le segment $s_1$ aligné avec le segment $s_2$ en supposant que le segment $s_1$ est le segment le plus à \og gauche \fg. De plus, la longueur du préfix-suffix commun est stocké dans l'attribut \emph{score}.\\
+Un objet de la classe \verb|SequenceAlignement| est défini de la manière
+suivante: le segment $s_1$ aligné avec le segment $s_2$ en supposant que le
+segment $s_1$ est le segment le plus à \og gauche \fg. De plus, la longueur du
+préfixe-suffixe commun est stocké dans l'attribut \emph{longestCommonSubstringLength}.\\
 
 De plus, dans la classe \verb|Sequence| nous retrouvons la méthode \emph{arcGenerator} qui à partir de deux fragments $s_1$ et $s_2$ calcule tous les alignements possibles. C'est-à-dire, si on considère que $\overline{s_1}$ est le fragment complémentaire inversé de $s_1$, alors on calcule:\\
 \begin{itemize}
@@ -78,7 +107,7 @@ A partir de ces alignements nous construisons les objets \verb|Arc|. Un objet ar
 	\item[$\bullet$] Des booléens \emph{s1Comp} et \emph{s1Comp} qui permettent de savoir si on considère le complémentaire inversé lors de l'alignement.
 	\item[$\bullet$] Les alignements \emph{s1Aligned} et \emph{s2Aligned}  résultant de l'exécution de l'algorithme d'alignement semi-global.
 \end{itemize}
-	
+
 Ces arcs nous permettent d'effectuer l'algorithme greedy pour trouver un chemin hamiltonien parcourant tous les fragments considérés.
 
 
@@ -99,3 +128,55 @@ Une structure de donnée \og Union-Find \fg~est une structure permettant de repr
 Dans l'implémentation que nous avons utilisée, chaque classe d'équivalence est représentée par un arbre pour lequel chaque noeud possède une référence vers son père. Dans un tel choix d'implémentation, la racine de chaque classe correspond au représentant de la classe d'équivalence.
 
 L'idée est que l'opération \textsc{Find} permet de retourner à la racine de l'arbre et donc de déterminer quel est le représentant de la classe d'équivalence. Pour l'opération \textsc{Union}, on rattache la racine d'une des deux classes à celle de l'autre classe. Toutefois, une telle démarche pourrait amener à des arbres fortement déséquilibrés . Afin d'éviter cela, une heuristique sur la hauteur de l'arbre est utilisée. On retient le \emph{rang} de l'arbre et à chaque fois que l'on veut faire l'union de deux arbres on considère leur rang. On attache l'arbre de rang inférieur à la racine de l'arbre de rang supérieur. Les arbres qui ne contiennent qu'un seul élément sont de rang 0 et dès que l'on effectue l'union de deux arbres de même rang, le résultat de cette union a un rang d'une unité plus grand.
+
+\subsection{Alignement}
+\label{subsection:alignment}
+Les deux dernières étapes que sont l'alignment et le consensus sont 
+implémentées dans la classe \verb|Consensus| à travers les méthodes 
+\verb|computeAlignment| qui calcule l'alignement des séquences et le sauvegarde 
+dans l'attribute \verb|alignment| ainsi qu'à travers la méthode \verb|build| 
+qui calcule le consensus.
+
+Pour calculer l'alignemet, nous utilisons les segments initiaux dans l'ordre 
+donné par l'algorithme greedy décrit à l'étape \ref{subsection:greedy} ainsi 
+que l'entier \verb|longestCommonSubstringLength| qui donne la longueur du plus 
+grand préfixe-suffixe.
+L'alignement se fait en deux étapes:
+\begin{enumerate}
+  \item Pour chaque séquence, nous calculons le nombre de gaps à ajouter au 
+début et à la fin de la séquence et nous gardons ces nombres dans un tableau 
+d'entier \verb|gaps|.
+  \item Grace au tableau d'entier donnant le nombre de gaps, on reconstruit,
+dans la méthode \verb|addGap|, les séquences finales et alignées et nous les 
+sauvegardons dans l'attribut \verb|alignment|.
+
+Si nous numérotons les séquences $s_{0}, ..., s_{n}$, les gaps à ajouter au 
+début (resp. à la fin) de $i$-ème séquence seront contenus dans le tableau 
+\verb|gaps| à la position $2i$ (resp. $2i + 1$).
+
+Le nombre de gaps à ajouter au début est calculé récursivement:
+\begin{enumerate}
+ \item Si $i = 0$, on ne doit ajouter aucun gap car c'est la première séquence.
+ \item Si $i > 0$, il est clair de nous devons au moins ajouter autant 
+de gaps que à l'étape $i - i$. A cela, on doit ajouter des gaps pour compléter 
+la séquence le préfixe-suffixe commun de $s_{i - 1}$ et $s_{i}$, 
+c'est-à-dire la taille de $s_{i - 1}$ moins la longueur du plus 
+grand préfixe-suffixe.
+%FIXME: mieux expliquer, ajouter un exemple ?
+\end{enumerate}
+
+Pour le nombre de gaps à ajouter à la fin, un procédé similaire est utilisé 
+excepté que nous commençons par la fin, $i = n$, initialisé à $0$.
+
+Maintenant que nous avons les nombres de gaps à ajouter au début et à la fin, 
+il suffit d'ajouter le symbole réprésentant les gaps dans chaque séquence en 
+parcourant le tableau \verb|gaps|.
+\end{enumerate}
+
+\subsection{Consensus}
+\label{subsection:consensus}
+
+L'étape précédente nous permet de récupérer les séquences alignées. Pour 
+calculer le consensus, nous prenons le nucléotide qui apparait le plus 
+souvent à chaque position. En cas d'égalité, un nucléotide est pris au hasard 
+(relativement à l'implémentation de \verb|HashMap|).
