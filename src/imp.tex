@@ -131,52 +131,89 @@ L'idée est que l'opération \textsc{Find} permet de retourner à la racine de l
 
 \subsection{Alignement}
 \label{subsection:alignment}
-Les deux dernières étapes que sont l'alignment et le consensus sont 
-implémentées dans la classe \verb|Consensus| à travers les méthodes 
+Les deux dernières étapes que sont l'alignement et le consensus sont 
+implémentées dans la classe \verb|ConsensusAbstract| à travers les méthodes 
 \verb|computeAlignment| qui calcule l'alignement des séquences et le sauvegarde 
-dans l'attribute \verb|alignment| ainsi qu'à travers la méthode \verb|build| 
+dans l'attribut \verb|alignment| ainsi qu'à travers la méthode \verb|build| 
 qui calcule le consensus.
 
-Pour calculer l'alignemet, nous utilisons les segments initiaux dans l'ordre 
-donné par l'algorithme greedy décrit à l'étape \ref{subsection:greedy} ainsi 
-que l'entier \verb|longestCommonSubstringLength| qui donne la longueur du plus 
-grand préfixe-suffixe.
-L'alignement se fait en deux étapes:
-\begin{enumerate}
-  \item Pour chaque séquence, nous calculons le nombre de gaps à ajouter au 
-début et à la fin de la séquence et nous gardons ces nombres dans un tableau 
-d'entier \verb|gaps|.
-  \item Grace au tableau d'entier donnant le nombre de gaps, on reconstruit,
-dans la méthode \verb|addGap|, les séquences finales et alignées et nous les 
-sauvegardons dans l'attribut \verb|alignment|.
+Pour calculer l'alignement, nous utilisons les segments alignés ans l'ordre 
+donné par l'algorithme greedy décrit à l'étape \ref{subsection:greedy}.
+L'algorithme greedy nous ressort une liste de paires de séquences $P_{i}$ tel
+que le deuxième segment de la paire $P_{i}$ provient du même segment initial que
+le premier de la paire $P_{i + 1}$, la différence se situant dans les gaps
+ajoutés lors de l'alignement semi-global entre les nucléotides pour offrir le
+meilleur score pour chaque paire.
 
-Si nous numérotons les séquences $s_{0}, ..., s_{n}$, les gaps à ajouter au 
-début (resp. à la fin) de $i$-ème séquence seront contenus dans le tableau 
-\verb|gaps| à la position $2i$ (resp. $2i + 1$).
+Pour pouvoir construire le contig final, il nous faut réaligner convenablement
+chaque paire de segments et pour cela, nous allons propager les gaps qui ont été
+ajoutés lors des calculs de l'alignement semi-global. Nous effectuons cette
+propagation en deux temps:
 
-Le nombre de gaps à ajouter au début est calculé récursivement:
 \begin{enumerate}
- \item Si $i = 0$, on ne doit ajouter aucun gap car c'est la première séquence.
- \item Si $i > 0$, il est clair de nous devons au moins ajouter autant 
-de gaps que à l'étape $i - i$. A cela, on doit ajouter des gaps pour compléter 
-la séquence le préfixe-suffixe commun de $s_{i - 1}$ et $s_{i}$, 
-c'est-à-dire la taille de $s_{i - 1}$ moins la longueur du plus 
-grand préfixe-suffixe.
-%FIXME: mieux expliquer, ajouter un exemple ?
+	\item vers le bas, c'est-à-dire, pour une paire $P_{i}$ on regarde si, entre
+		deux nucléotides de la deuxième composante de $P_{i}$, le
+		nombre de gaps est plus grand qu'entre les deux mêmes nucléotides de la première
+		séquence de la paire suivante $P_{i + 1}$ et si c'est le cas, on propage la
+		différence entre ces nombres vers les séquences du dessous.
+	\item vers le haut par le même procédé que pour la propagation vers le bas
+		sauf que nous propageons les gaps qui sont plus présents dans la
+		première composante de la paire $P_{i + 1}$ que dans la deuxième
+		composante de paire $P_{i}$ et qu'on propage alors la différence de gaps
+		vers les séquences du dessus.
 \end{enumerate}
 
-Pour le nombre de gaps à ajouter à la fin, un procédé similaire est utilisé 
-excepté que nous commençons par la fin, $i = n$, initialisé à $0$.
+Grace à ce procédé, nous sommes sûrs que les séquences résultantes des
+alignements semi-globaux sont bien les mêmes et que l'ordre renvoyé par le greedy
+est toujours le même (car l'ordre des scores reste le même).
 
-Maintenant que nous avons les nombres de gaps à ajouter au début et à la fin, 
-il suffit d'ajouter le symbole réprésentant les gaps dans chaque séquence en 
-parcourant le tableau \verb|gaps|.
-\end{enumerate}
+\subsubsection{Représentation d'une séquence pour l'alignement}
+
+Au vu de cette méthode de propagation de gaps, le procédé d'alignement n'est
+donc qu'un ajout de gaps entre nucléotides: il est alors intéressant de
+représenter les séquences alignées comme des séquences sans gaps où, après
+chaque nucléotide de la séquence, nous retenons, dans un tableau d'entier, le
+nombre de gaps suivant celui-ci.\footnote{Une même représentation peut être
+	utilisée pour représenter pour les nucléotides successifs identiques: nous
+	compressons ainsi la séquence. Nous n'avons souhaité compresser que les gaps
+	car nous n'allons travailler qu'avec ceux-ci, et cela aurait complexifié
+l'implémentation des méthodes.}
+
+Par exemple, la séquence \verb|A--T-G-C| sera représenté par une séquence
+\verb|ATGC| et par un tableau nommé \verb|nb_gaps| de taille 4
+contenant les entiers {2, 1, 1, 0} car il y a deux gaps après le premier
+nucléotide, un gap après le second, un après le troisième, et 0 à la fin. Les
+complexités en temps et en mémoire sont ainsi diminuées.
+Au niveau de la mémoire, une séquence alignée se voit ainsi 'compressée'.
+
+L'ajout de gaps sera alors très simple et très rapide en complexité. En effet,
+si nous souhaitons ajouter un gap à la position 2 (supposons qu'on commence en
+0) à la séquence \verb|A--T-G-C| pour obtenir \verb|A---T-G-C|, il nous suffira
+d'augmenter de 1 le nombre de gaps après le nucléotide A: nous obtiendrons alors
+le tableau {3, 1, 1, 0}. Cet ajout de gap peut se faire en $O(n)$ où $n$ est la
+taille de la séquence \textit{initiale}. De plus, l'insertion de gaps ne demande
+pas plus d'espace mémoire: qu'importe si nous devons insérer $2$ gaps ou $10000$
+gaps.\footnote{Avec la représentation sous forme de byte (1 octet en Java),
+	cette nouvelle abstraction est intéressante si nous devons ajouter plus de 7
+	gaps entre chaque nucléotide (un entier prenant 8 octets), ce qui peut
+arriver si nous travaillons sur de grandes séquences.}
+
+Un autre point positif est qu'il est très facile de connaitre la position où nous
+devons insérer des gaps s'il nous est demandé de rajouter $n$ gaps entre deux
+nucléotides: il suffit de connaitre la position du nucléotide dans la chaine
+initiale après lequel nous devons ajouter les $n$ gaps.
+
+Cette abstractation des séquences est réalisée dans la classe
+\verb|SequenceAbstract|.\footnote{Cela justifie le nom de la classe
+	\verb|ConsensusAbstract| qui travaille avec des objets de la classe
+\verb|SequenceAbstract|, et non \verb|Squence|.}
 
 \subsection{Consensus}
 \label{subsection:consensus}
 
-L'étape précédente nous permet de récupérer les séquences alignées. Pour 
-calculer le consensus, nous prenons le nucléotide qui apparait le plus 
-souvent à chaque position. En cas d'égalité, un nucléotide est pris au hasard 
-(relativement à l'implémentation de \verb|HashMap|).
+Grace à l'alignement précédemment réalisé, nos paires $P_{i}$ et $P_{i + 1}$ ont
+maintenant la même séquence respectivement en deuxième composante et en première
+composante et toutes les séquences sont maintenant bien alignées. Pour
+construire le contig final, nous allons parcourir chaque colonne de l'alignement
+et prendre le nucléotide qui apparait le plus souvent. En cas d'égalité, nous
+prenons par ordre alphabétique.
