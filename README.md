@@ -32,50 +32,33 @@ Liste des résultats du dotmatcher
 ### Simplifiée
 
 * Cible1S
-![alt text](cible1S)
+![Résultats dotmatcher Cible1S](res/cible1S.png)
 * Cible1S-ic
-![alt text](cible1S-ic)
+![Résultats dotmatcher Cible1S-ic](res/cible1S-ic.png)
 * Cible2S
-![alt text](cible2S)
+![Résultats dotmatcher Cible2S](res/cible2S.png)
 * Cible2S-ic
-![alt text](cible2S-ic)
+![Résultats dotmatcher Cible2S-ic](res/cible2S-ic.png)
 * Cible3S
-![alt text](cible3S)
+![Résultats dotmatcher Cible3S](res/cible3S.png)
 * Cible3S-ic
-![alt text](cible3S-ic)
+![Résultats dotmatcher Cible3S-ic](res/cible3S-ic.png)
 
 ### "Normale"
 
 * Cible1
-![alt text](cible1)
+![Résultats dotmatcher Cible1](res/cible1.png)
 * Cible1-ic
-![alt text](cible1-ic)
+![Résultats dotmatcher Cible1-ic](res/cible1-ic.png)
 * Cible2
-![alt text](cible2)
+![Résultats dotmatcher Cible2](res/cible2.png)
 * Cible2-ic
-![alt text](cible2-ic)
+![Résultats dotmatcher Cible2-ic](res/cible2-ic.png)
 * Cible4
-![alt text](cible4S)
+![Résultats dotmatcher Cible4](res/cible4.png)
 * Cible4S-ic
-![alt text](cible4S-ic)
+![Résultats dotmatcher Cible4-ic](res/cible4-ic.png)
 * Cible5
-![alt text](cible5S)
+![Résultats dotmatcher Cible5](res/cible5.png)
 * Cible5S-ic
-![alt text](cible5S-ic)
-
-
-[cible1S](res/cible1S.png "Résultats dotmatcher Cible1S")
-[cible1S-ic](res/cible1S-ic.png "Résultats dotmatcher Cible1S-ic")
-[cible2S](res/cible2S.png "Résultats dotmatcher Cible2S")
-[cible2S-ic](res/cible2S-ic.png "Résultats dotmatcher Cible2S-ic")
-[cible3S](res/cible3S.png "Résultats dotmatcher Cible3S")
-[cible3S-ic](res/cible3S-ic.png "Résultats dotmatcher Cible3S-ic")
-
-[cible1](res/cible1.png "Résultats dotmatcher Cible1")
-[cible1-ic](res/cible1-ic.png "Résultats dotmatcher Cible1-ic")
-[cible2](res/cible2.png "Résultats dotmatcher Cible2")
-[cible2-ic](res/cible2-ic.png "Résultats dotmatcher Cible2-ic")
-[cible4](res/cible4.png "Résultats dotmatcher Cible4")
-[cible4-ic](res/cible4-ic.png "Résultats dotmatcher Cible4-ic")
-[cible5](res/cible5.png "Résultats dotmatcher Cible5")
-[cible5-ic](res/cible5-ic.png "Résultats dotmatcher Cible5-ic")
+![Résultats dotmatcher Cible5-ic](res/cible5-ic.png)
