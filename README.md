@@ -56,9 +56,9 @@ Liste des résultats du dotmatcher
 ![Résultats dotmatcher Cible2-ic](res/cible2-ic.png)
 * Cible4
 ![Résultats dotmatcher Cible4](res/cible4.png)
-* Cible4S-ic
+* Cible4-ic
 ![Résultats dotmatcher Cible4-ic](res/cible4-ic.png)
 * Cible5
 ![Résultats dotmatcher Cible5](res/cible5.png)
-* Cible5S-ic
+* Cible5-ic
 ![Résultats dotmatcher Cible5-ic](res/cible5-ic.png)
