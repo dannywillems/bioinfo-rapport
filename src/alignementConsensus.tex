@@ -1,14 +1,15 @@
 %!TEX root=rapport.tex
-	
+
 \subsection{Alignement}
 \label{subsection:alignment}
-Les deux dernières étapes que sont l'alignement et le consensus sont 
-implémentées dans la classe \verb|ConsensusAbstract| à travers les méthodes 
-\verb|computeAlignment| qui calcule l'alignement des séquences et le sauvegarde 
-dans l'attribut \verb|alignment| ainsi qu'à travers la méthode \verb|build| 
+
+Les deux dernières étapes que sont l'alignement et le consensus sont
+implémentées dans la classe \verb|ConsensusAbstract| à travers les méthodes
+\verb|computeAlignment| qui calcule l'alignement des séquences et le sauvegarde
+dans l'attribut \verb|alignment| ainsi qu'à travers la méthode \verb|build|
 qui calcule le consensus.
 
-Pour calculer l'alignement, nous utilisons les segments alignés ans l'ordre 
+Pour calculer l'alignement, nous utilisons les segments alignés ans l'ordre
 donné par l'algorithme greedy décrit à l'étape \ref{subsection:greedy}.
 L'algorithme greedy nous ressort une liste de paires de séquences $P_{i}$ tel
 que le deuxième segment de la paire $P_{i}$ provient du même segment initial que
@@ -39,6 +40,7 @@ alignements semi-globaux sont bien les mêmes et que l'ordre renvoyé par le gre
 est toujours le même (car l'ordre des scores reste le même).
 
 \subsubsection{Représentation d'une séquence pour l'alignement}
+\label{subsubsection:repr_sequence_alignment}
 
 Au vu de cette méthode de propagation de gaps, le procédé d'alignement n'est
 donc qu'un ajout de gaps entre nucléotides: il est alors intéressant de
@@ -54,7 +56,8 @@ Par exemple, la séquence \verb|A--T-G-C| sera représenté par une séquence
 \verb|ATGC| et par un tableau nommé \verb|nb_gaps| de taille 4
 contenant les entiers {2, 1, 1, 0} car il y a deux gaps après le premier
 nucléotide, un gap après le second, un après le troisième, et 0 à la fin. Les
-complexités en temps et en mémoire sont ainsi diminuées.
+complexités en temps et en mémoire sont ainsi diminuées car la plupart des
+algorithmes travaillent avec la séquence initiale.
 Au niveau de la mémoire, une séquence alignée se voit ainsi 'compressée'.
 
 L'ajout de gaps sera alors très simple et très rapide en complexité. En effet,
@@ -68,16 +71,74 @@ gaps.\footnote{Avec la représentation sous forme de byte (1 octet en Java),
 	cette nouvelle abstraction est intéressante si nous devons ajouter plus de 7
 	gaps entre chaque nucléotide (un entier prenant 8 octets), ce qui peut
 arriver si nous travaillons sur de grandes séquences.}
+La plupart des méthodes ont alors une complexité relative à la taille de la
+séquence \textit{initiale}, et non la séquence alignée et vu que l'insertion de
+gaps ne modifie jamais la complexité ou la taille de la séquence initiale, nous
+gardons toujours une complexité relative à la taille de la séquence initiale, ce
+qui est avantageux dans le cas d'insertions de très grand nombre de gaps.
 
 Un autre point positif est qu'il est très facile de connaitre la position où nous
 devons insérer des gaps s'il nous est demandé de rajouter $n$ gaps entre deux
 nucléotides: il suffit de connaitre la position du nucléotide dans la chaine
 initiale après lequel nous devons ajouter les $n$ gaps.
 
-Cette abstractation des séquences est réalisée dans la classe
+Nous gardons également un attribut contenant l'offset de la séquence dans le
+chemin hamiltonien, c'est-à-dire le décalage vers la droite du début de la
+séquence. Cela nous amène à parler de position relative et de position absolue.
+La position relative d'un élément dans une séquence est la position de l'élément
+sans l'offset tandis que la position absolue est la position en prenant compte
+de l'offset.
+
+\begin{exemple}
+	Soit la séquence \verb|A--T-G-C| et considérons un offset de 4, c'est-à-dire
+	que 'réellement', la séquence est \verb|----A--T-G-C|.
+
+	En commençant de calculer à 0, le nucléotide à la position relative 3 est
+	\verb|T| tandis que ce même nucléotide est la position absolue $4 + 3 = 7$,
+	l'élément à la position absolue 3 étant le dernier gap avant le \verb|A|.
+\end{exemple}
+
+Cette distinction est à faire car lorsque nous devons propager des gaps, nous
+devons considérer cet offset, c'est-à-dire travailler avec la position absolue.
+
+Par la suite, nous travaillerons toujours avec la position \textit{absolue}.
+
+Cette abstraction des séquences est réalisée dans la classe
 \verb|SequenceAbstract|.\footnote{Cela justifie le nom de la classe
 	\verb|ConsensusAbstract| qui travaille avec des objets de la classe
 \verb|SequenceAbstract|, et non \verb|Squence|.}
+
+Divers constructeurs sont implémentés (pour permettre diverses compatibilités
+avec les autres parties) mais un seul est utilisé dans \verb|ConsensusAbstract|: celui qui
+demande un objet de la classe \verb|Sequence| représentant une séquence alignée.
+L'algorithme, en $O(n)$ où $n$ est la taille de la séquence alignée, reconstruit
+la séquence initiale et le tableau de gaps.
+
+Les autres méthodes utilisées sont:
+\begin{description}
+	\item[\textsc{getSize}]: Récupère la taille de la séquence. La taille est
+		contenue dans un attribut \verb|size| qui est mis à jour à chaque fois
+		qu'on ajoute des éléments et cette mise à jour se fait en O(1). Cette
+		implémentation permet de garder une complexité en O(1) et de diminuer la
+		complexité de \verb|addGapsEnd| dans \verb|ConsensusAbstract| par
+		exemple.
+	\item[\textsc{complement}]: Construit, en $O(m)$ avec $m$ la taille de la
+		séquence \textit{initiale}, le complémentaire inversé de la séquence.
+	\item[\textsc{addGapsAndReturnIndice}]: insère $n$ gaps à
+			une position donnée et retourne l'indice (dans la séquence initiale)
+			du nucléotide après lequel les gaps ont été insérés, le tout en
+			$O(m)$ où $m$ est la taille de la séquence initiale. Le retour de
+			la fonction est utilie pour la propagation entre deux séquences
+			provenant d'une même séquence initiale quand on doit connaître
+			entre quels nucléotides nous avons insérés les gaps.
+	\item[\textsc{addGapsAfterIndiceAndReturnPosition}]: insère $n$ gaps après
+		le nucléotide se trouvant à l'indice donné dans la séquence initiale.
+		Cette méthode est utilisée quand nous devons propager des gaps entre
+		deux séquences ne provenant pas de la même séquence initiale et que nous
+		devons connaitre alors la position où les gaps ont été insérés. La
+		complexité est également en $O(m)$ où $m$ est la taille de la séquence
+		initiale.
+\end{description}
 
 \subsection{Consensus}
 \label{subsection:consensus}
@@ -91,17 +152,18 @@ prenons par ordre alphabétique.
 
 
 \begin{comment}
+
 \subsection{Deuxième approche}
 
-Dans cette section nous expliquons l'approche du calcul de la séquence finale exposé par Aline. 
+Dans cette section nous expliquons l'approche du calcul de la séquence finale exposé par Aline.
 L'idée est un peu différente, car au contraire de l'approche précédente, nous ne propageons pas physiquement les gaps mais travaillons sur les paires d'alignements en les parcourant de gauche à droite chacune à leur tour. Chaque paire d'alignement n'étant pas de la même longueur ni parfaitement alignés les uns en dessous des autres, il faut savoir se rappeler à quelle position de la séquence finale nous nous trouvons réellement lors du traitement. C'est ici que l'idée d'\emph{offset} intervient. Cette méthode nécessite un nouvel objet \verb|Counter| qui est un compteurr  permettant de retenir pour chaque colonne le nombre de $A$, de $C$, de $T$ et de $G$ qui ont été comptabilisés en une certaine position (pour un certain compteur) de la séquence finale. Une fois tous les compteurs récupérés pour toutes les positions de la séquence finale il suffit de récupérer le nucléotide ayant comptabilisé le maximum d'occurrences pour cette colonne.
 
-Un premier test de l'implémentation de cette idée a été effectué sans tenir compte du fait que des gaps pouvaient apparaitre au sein même d'un alignement. Par exemple si on a l'alignement de $(f,g)$ puis celui de $(g,h)$, il se peut que les gaps internes au niveau de $g$ dans le premier alignement ne soient pas les mêmes que les gaps internes de $g$ au niveau du second alignement. 
-Nous avons pour cela besoin d'un dictionnaire qui a un entier (une position possible dans la séquence finale) associe un compteur et de la notion d'offset. 
+Un premier test de l'implémentation de cette idée a été effectué sans tenir compte du fait que des gaps pouvaient apparaitre au sein même d'un alignement. Par exemple si on a l'alignement de $(f,g)$ puis celui de $(g,h)$, il se peut que les gaps internes au niveau de $g$ dans le premier alignement ne soient pas les mêmes que les gaps internes de $g$ au niveau du second alignement.
+Nous avons pour cela besoin d'un dictionnaire qui a un entier (une position possible dans la séquence finale) associe un compteur et de la notion d'offset.
 
-Pour mieux comprendre la notion d'offset, illustrons-la sur la situation de la figure~\ref{offset}. Lors du parcours de première paire d'alignement, l'offset est à 0 car $f$ est à gauche de $g$. On parcourt alors toutes les positions des deux alignements en créants de nouveaux compteurs car il n'en existe pas encore pour les positions couvertent par $f$ et $g$. 
+Pour mieux comprendre la notion d'offset, illustrons-la sur la situation de la figure~\ref{offset}. Lors du parcours de première paire d'alignement, l'offset est à 0 car $f$ est à gauche de $g$. On parcourt alors toutes les positions des deux alignements en créants de nouveaux compteurs car il n'en existe pas encore pour les positions couvertent par $f$ et $g$.
 Lorsqu'on va traiter l'alignement $(g,f)$ l'offset devient négatif car le nucléotide le plus à gauche à traiter est avant le nucléotide que l'on avait considérer comme étant en position 0 (le premier nucléotide de la séquence $f$). On parcourt alors cet alignement de la gauche vers la droite sachant que pour certaine position (celles déjà couvertent par l'alignement $(f,g)$) des compteurs existent déjà et qu'il nous suffit donc de les mettre à jour.
-\begin{figure}	
+\begin{figure}
 		\includegraphics[scale= 0.50]{offset.png}
 		\caption{Deux paires d'alignement $(f,g)$ et $(g,f)$}
 		\label{fig:offset}
