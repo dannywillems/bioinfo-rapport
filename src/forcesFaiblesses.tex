@@ -1,3 +1,17 @@
 %!TEX root=rapport.tex
 
 \section{Forces et faiblesses de notre travail}
+
+\subsection{Forces}
+
+Le multi-threading de la génération des arcs nous a permis d'améliorer sensiblement la vitesse d'exécution de notre algorithme. A titre d'exemple, nous sommes passé de $\approx 50$ secondes à $\approx 25$ secondes pour le calcul des arcs de la première collection sur la machine d'Aline (MacBook Pro, 2,8 GHz Intel Core i5). Nous avons donc bon espoir quant au fait que sur des machines pouvant supporter plus de thread la diminution du temps d'exécution reste proportionnel à l'augmentation du nombre de threads. De ce fait, nous pouvons récupérer les résultats de la reconstruction de la séquence initiale pour les différentes collections en un temps raisonnable. La collection 2, la plus coûteuse en temps, prend environ une heure de calcul.\\
+
+Nous pensons que l'implémentation de la structure de donnée Union-Find est particulièrement adaptée dans le cadre de l'implémentation de l'algorithme Greedy. La complexité amortie pour les opérations sur cette structure étant en temps constant, il semble difficile de faire mieux.\\
+
+\todo{autres points forts?}
+
+\subsection{Faiblesses}
+
+Bien que nous ayons réfléchi à la question, un traitement efficace des alignements de type \og inside\fg~n'a pu être mis en place. Toutefois, l'information nécessaire pour le traitement des arcs représentant des alignements de ce type a été mis en place et une amélioration future peut être effectuée sans devoir changer la structure des objets utilisés pour l'exécution de l'algorithme greedy.
+
+\todo{à compléter}
