@@ -8,10 +8,21 @@ Le multi-threading de la génération des arcs nous a permis d'améliorer sensib
 
 Nous pensons que l'implémentation de la structure de donnée Union-Find est particulièrement adaptée dans le cadre de l'implémentation de l'algorithme Greedy. La complexité amortie pour les opérations sur cette structure étant en temps constant, il semble difficile de faire mieux.\\
 
+
+La seconde implémentation des séquences utilisées pour la propagation des gaps
+fournit des algorithmes rapides (linéaire en la taille de la séquence initiale et
+du nombre de séquences) ainsi qu'une clarté, facilité de compréhension et un
+code court pour la propagation au niveau algorithmique.
+
 \todo{autres points forts?}
 
 \subsection{Faiblesses}
 
 Bien que nous ayons réfléchi à la question, un traitement efficace des alignements de type \og inside\fg~n'a pu être mis en place. Toutefois, l'information nécessaire pour le traitement des arcs représentant des alignements de ce type a été mis en place et une amélioration future peut être effectuée sans devoir changer la structure des objets utilisés pour l'exécution de l'algorithme greedy.
+
+De plus, le passage des objets de classe \verb|Sequence| aux objets de la classe
+\verb|SequenceAbstract| prend un temps de calcul $O(M_{i} * k)$, où $M_{i}$ est
+la taille de la plus grande séquence initiale et $k$ le nombre initial de
+séquences.
 
 \todo{à compléter}
