@@ -9,7 +9,7 @@ implémentées dans la classe \verb|ConsensusAbstract| à travers les méthodes
 dans l'attribut \verb|alignment| ainsi qu'à travers la méthode \verb|build|
 qui calcule le consensus.
 
-Pour calculer l'alignement, nous utilisons les segments alignés ans l'ordre
+Pour calculer l'alignement, nous utilisons les segments alignés dans l'ordre
 donné par l'algorithme greedy décrit à l'étape \ref{subsection:greedy}.
 L'algorithme greedy nous ressort une liste de paires de séquences $P_{i}$ tel
 que le deuxième segment de la paire $P_{i}$ provient du même segment initial que
@@ -73,7 +73,7 @@ gaps.\footnote{Avec la représentation sous forme de byte (1 octet en Java),
 arriver si nous travaillons sur de grandes séquences.}
 La plupart des méthodes ont alors une complexité relative à la taille de la
 séquence \textit{initiale}, et non la séquence alignée et vu que l'insertion de
-gaps ne modifie jamais la complexité ou la taille de la séquence initiale, nous
+gaps ne modifie jamais la taille de la séquence initiale, nous
 gardons toujours une complexité relative à la taille de la séquence initiale, ce
 qui est avantageux dans le cas d'insertions de très grand nombre de gaps.
 
@@ -124,13 +124,16 @@ Les autres méthodes utilisées sont:
 		exemple.
 	\item[\textsc{complement}]: Construit, en $O(m)$ avec $m$ la taille de la
 		séquence \textit{initiale}, le complémentaire inversé de la séquence.
+		Cette méthode est donc plus rapide que la méthode \verb|complement| de
+		\verb|Sequence| qui nécessite de parcourir toute la séquence
+		\textit{alignée}.
 	\item[\textsc{addGapsAndReturnIndice}]: insère $n$ gaps à
 			une position donnée et retourne l'indice (dans la séquence initiale)
 			du nucléotide après lequel les gaps ont été insérés, le tout en
 			$O(m)$ où $m$ est la taille de la séquence initiale. Le retour de
-			la fonction est utilie pour la propagation entre deux séquences
+			la fonction est utile pour la propagation entre deux séquences
 			provenant d'une même séquence initiale quand on doit connaître
-			entre quels nucléotides nous avons insérés les gaps.
+			entre quels nucléotides nous avons inséré les gaps.
 	\item[\textsc{addGapsAfterIndiceAndReturnPosition}]: insère $n$ gaps après
 		le nucléotide se trouvant à l'indice donné dans la séquence initiale.
 		Cette méthode est utilisée quand nous devons propager des gaps entre
@@ -139,6 +142,49 @@ Les autres méthodes utilisées sont:
 		complexité est également en $O(m)$ où $m$ est la taille de la séquence
 		initiale.
 \end{description}
+
+\subsubsection{Propagation des gaps}
+
+Comme expliqué précédemment, la propagation des gaps se fait en deux temps: vers
+le bas puis vers le haut.
+
+Les méthodes s'occupant de la propagation se trouvent dans la classe
+\verb|ConsensusAbstract|.
+
+Avant tout, en se rappelant que le chemin hamiltonien qui nous est renvoyé ne
+tient pas compte de l'offset, il faut le calculer. La méthode
+\verb|computeOffset| s'occupe, en $O(k)$ où $k$ est la longueur du chemin
+hamiltonien, de mettre à jour les offsets des séquences du chemin en alignant
+les séquences provenant de la même séquence initiale, c'est-à-dire, pour deux
+paires $P_{i}$ et $P_{i + 1}$, la deuxième séquence de $P_{i}$ va être alignée
+(ie le premier nucléotide va être placé au même décalage) avec la première
+séquence de $P_{i + 1}$.
+
+Viennent les propagations des gaps.
+Les méthodes s'en chargeant sont
+\verb|propageGapsDownFrom| et \verb|propageGapsUpFrom|. Les algorithmes étant
+sensiblement les mêmes pour le bas et le haut, nous décrivons uniquement la
+propagation vers le bas.
+
+Dans \verb|computeAlignment|, nous parcourons chaque paire $P_{i}$ du chemin
+hamiltonien et faisons appelle à \verb|propageGapsDownFrom| en envoyant comme
+paramètre l'indice $i$. Comme expliqué précédemment, il faut regarder la
+séquence $t_{i}$ se trouvant en seconde position dans la paire $P_{i}$ et celle en
+première position de la paire $P_{i + 1}$, notée $s_{i + 1}$, et parcourir chaque nucléotide en
+propageant vers le bas la différence de gaps (nous rappelons que $t_{i}$ et
+$s_{i + 1}$ proviennent de la même séquence initiale et ont donc les mêmes
+nucléotides, la différence se situant dans le nombre de gaps entre
+chaque).
+
+S'il y a plus de gaps dans $t_{i}$ que dans $s_{i + 1}$ entre les
+nucléotides $n_{j}$ et $n_{j + 1}$, ce que nous pouvons savoir en $O(1)$ grace à
+la nouvelle abstraction des séquences car il suffit de comparer le tableau des
+gaps à la position $j$, nous propageons la différence vers le bas.
+Cette propagation se fait à travers la méthode
+\verb|propageGapsDownFromPosition| (resp. \verb|propageGapsUpFromPosition|) qui
+prend deux paramètres: l'indice et le nombre de gaps à propager.
+
+Cette dernière méthode se contente
 
 \subsection{Consensus}
 \label{subsection:consensus}
@@ -149,7 +195,6 @@ composante et toutes les séquences sont maintenant bien alignées. Pour
 construire le contig final, nous allons parcourir chaque colonne de l'alignement
 et prendre le nucléotide qui apparait le plus souvent. En cas d'égalité, nous
 prenons par ordre alphabétique.
-
 
 \begin{comment}
 
