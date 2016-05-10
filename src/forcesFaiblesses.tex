@@ -10,8 +10,8 @@ Nous pensons que l'implémentation de la structure de donnée Union-Find est par
 
 La seconde implémentation des séquences utilisées pour la propagation des gaps
 fournit des algorithmes rapides (quadratique en la taille de la plus grande séquence initiale et
-du nombre de séquences) ainsi qu'une clarté, facilité de compréhension et un
-code court pour la propagation au niveau algorithmique. De plus, cette
+du nombre de séquences) ainsi qu'une clarté, une facilité de compréhension et un
+code court. De plus, cette
 implémentation peut être généralisée à une liste quelconque d'acide aminée.
 
 \todo{autres points forts?}
@@ -25,10 +25,12 @@ De plus, le passage des objets de classe \verb|Sequence| aux objets de la classe
 la taille de la plus grande séquence initiale et $k$ le nombre initial de
 séquences.
 
-Bien que ce soit déjà rapide que l'insertion de gaps lors de la propagation soit
+Bien que l'insertion de gaps lors de la propagation soit
 linéaire en la taille de la séquence initiale, ceci étant du à la nécessité de
 récupérer la position absolue, il aurait été intéressant d'avoir une complexité
 en $O(1)$. Cependant, nous n'avons pu trouver de solutions pour amortir cette
-complexité.
+complexité. Le temps constante aurait permis d'arriver à une complexité globale
+(pour l'alignement et le consensus) à du $O(M_{i} k ^{2})$ à la place de
+$O(M_{i}^{2} k^{2})$.
 
 \todo{à compléter}
