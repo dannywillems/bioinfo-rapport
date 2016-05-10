@@ -1,3 +1,22 @@
 %!TEX root=rapport.tex
 
 \section{Interprétation des résultats obtenus}
+
+\subsection{Autres implémentations}
+
+Nous avons également tenté de changer l'implémentation du Greedy en changeant
+le comparateur d'arcs, en prévilégiant les nombres de gaps finaux et initiaux
+dans l'alignement semi-global des séquences ou en propageant les gaps à la fin.
+
+Par exemple, lorsque deux arcs ont un même score, nous avons tenté de
+privilégier les arcs qui ont une plus longue sous-séquence commune, c'est-à-dire
+sans compter les gaps finaux et initiaux. Cette méthode ne nous a pas donné de
+mauvais résultats mais ils étaient moins bons.
+
+Dans le code soumis, nous avons prévilégié, lors de l'alignement semi-global,
+l'alignement avec le moins de gaps finaux et initiaux, c'est-à-dire en
+prenant le dernier maximum pour la dernière colonne et la dernière ligne. Nous
+avons tenté de prendre le premier maximum pour chacun d'entre eux, mais cela n'a
+pas donné de meilleurs résultats non plus.
+
+%Explication de la propagations des gaps à la fin.
