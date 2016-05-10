@@ -184,7 +184,69 @@ Cette propagation se fait à travers la méthode
 \verb|propageGapsDownFromPosition| (resp. \verb|propageGapsUpFromPosition|) qui
 prend deux paramètres: l'indice et le nombre de gaps à propager.
 
-Cette dernière méthode se contente
+Cette dernière méthode parcourt, à partir de la paire $P_{i} = (s_{i}, t_{i})$,
+toutes les paires $P_{j} = (s_{j}, t_{j})$, $i < j \leq n$ et ajoute les $n$
+gaps nécessaires dans les segments $s_{j}$ et $t_{j}$. Supposons que nous devons
+propager $n$ gaps venant d'entre les nucléotides $n_{k}$ et $n_{k + 1}$ de
+$t_{i}$, c'est-à-dire que nous devons insérer dans $s_{i + 1}$ après l'indice
+$k$.
+
+L'insertion se fait de manière récursive:
+\begin{itemize}
+	\item[$\bullet$] Pour $j = i + 1$, c'est-à-dire la paire juste après $P_{i}$, nous
+		devons insérer les gaps entre les deux nucléotides $n_{k}$ et $n_{k +
+		1}$ de $s_{i + 1}$. Cette insertion se fait grâce à la méthode
+		\verb|addGapsAfterIndiceAndReturnPosition| sur $s_{i + 1}$ (en $O(m)$,
+		$m$ étant la taille de la séquence initiale d'où provient $t_{i}$) et on
+		récupère en plus la position absolue d'insertion (ce qui provoque le $m$
+		dans la complexité de la méthode car nous devons calculer à la volée la
+		position absolue). Cette position absolue va permettre de savoir où il
+		faut propager les gaps dans la séquence $t_{i + 1}$. Grace à cette
+		position, on utilise la méthode \verb|addGapsAndReturnIndice| sur $t_{i
+		+ 1}$ pour insérer les gaps où il faut, et nous récupérons en même temps
+		l'indice du nucléotide de $t_{i + 1}$ après lequel les gaps ont été
+		ajoutés. Cette dernière méthode est également en $O(m)$, toujours pour
+		la même raison que précédemment.
+	\item[$\bullet$] Pour $j > i + 1$, nous répétons l'opération du cas de base mais cette
+		fois-ci, nous utilisons l'indice que la méthode
+		\verb|addGapsAndReturnIndice| nous a renvoyé à l'étape $j - 1$.
+\end{itemize}
+
+Pour un appel à \verb|propageGapsUpFromPosition|, nous obtenons donc une
+complexité en $O( (k - i) M_{i})$ où $M_{i}$ est la taille de la plus grande
+séquence du chemin, $k$ le nombre initial de séquence et $i$ la position de
+début de l'insertion.
+
+Cela entraine donc une complexité en $O( (k - i) M_{i}^{2})$ pour
+\verb|propageGapsDownFrom| car nous faisons appel, pour chaque nucléotide de
+$t_{i}$ (dans le pire des cas), à la méthode \-\verb|propageGapsUpFromPosition|.
+Par conséquence, comme \verb|propageGapsDown| parcourt toutes les paires en
+faisant appel à \verb|propageGapsDown|, nous obtenons une complexité finale de
+$O(k^{2} M_{i}^{2})$.
+
+Pour simplifier le calcul du consensus à la dernière étape, nous mettons à jour
+les gaps finaux des séquences pour que toutes les séquences aient la même
+longueur. Ce calcul est fait par \verb|addEndGaps| et se déroule en $O(k)$ où
+$k$ est le nombre initial de séquences. Cette méthode se charge de calculer la
+taille de la plus longue séquence (en $O(k)$ car \verb|getSize| est en $O(1)$)
+et elle ajoute le nombre de gaps dans le tableau \verb|nb_gaps| pour chaque
+séquence. Ce nombre de gaps à ajouter à la séquence courante est égale à la
+taille maximale moins la taille de la séquence courante.
+
+Pour l'ensemble de la méthode \verb|computeAlignment|, on obtient donc une
+complexité de
+
+\begin{equation}
+	\overbrace{O(k)}^{\text{ mise à jour offset}} + \overbrace{2 O(k^{2}
+	M_{i}^{2})}^{\text{propagation haut et bas}} + \overbrace{O(k)}^{\text{ajout
+	des gaps finaux}} = O(k^{2} M_{i}^{2})
+\end{equation}
+
+%TODO: exemple de propagation. En trouver un avec 3 séquences initiales pour
+%montrer que la propagation ne se fait pas en colonne.
+%\begin{center}
+	%- - AT - - G - - C - -
+%\end{center}
 
 \subsection{Consensus}
 \label{subsection:consensus}
