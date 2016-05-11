@@ -263,6 +263,11 @@ construire le contig final, nous allons parcourir chaque colonne de l'alignement
 et prendre le nucléotide qui apparait le plus souvent. En cas d'égalité, nous
 prenons par ordre alphabétique.
 
+Pour parcourir les objets de la classe \verb|SequenceAbstract|, nous avons
+implémenté un itérateur sur ceux-ci qui permet d'avoir un algorithme clair et
+dont la complexité est en $O(k M_{i})$ où $k$ est le nombre initial de
+séquences et $M_{i}$ la taille de la plus longue séquence.
+
 \begin{comment}
 
 \subsection{Deuxième approche}
