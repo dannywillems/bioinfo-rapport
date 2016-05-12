@@ -13,36 +13,41 @@ Pour calculer l'alignement, nous utilisons les segments alignés dans l'ordre
 donné par l'algorithme greedy décrit à l'étape \ref{subsection:greedy}.
 L'algorithme greedy nous ressort une liste de paires de séquences $P_{i}$ tel
 que le deuxième segment de la paire $P_{i}$ provient du même segment initial que
-le premier de la paire $P_{i + 1}$, la différence se situant dans les gaps
-ajoutés lors de l'alignement semi-global entre les nucléotides pour offrir le
-meilleur score pour chaque paire.
+le premier de la paire $P_{i + 1}$, la différence entre ces deux séquences se
+situant dans les gaps ajoutés lors de l'alignement semi-global entre les
+nucléotides pour offrir le meilleur score pour chaque paire.
+
+\todo{Insérer un exemple de la sortie du greedy.}
 
 Pour pouvoir construire le contig final, il nous faut réaligner convenablement
-chaque paire de segments et pour cela, nous allons propager les gaps qui ont été
+chaque paire de segments et, pour cela, nous propageons les gaps qui ont été
 ajoutés lors des calculs de l'alignement semi-global. Nous effectuons cette
 propagation en deux temps:
 
 \begin{enumerate}
-	\item vers le bas, c'est-à-dire, pour une paire $P_{i}$, on regarde si entre
-		deux nucléotides de la deuxième composante de $P_{i}$, le
-		nombre de gaps est plus grand qu'entre les deux mêmes nucléotides de la première
-		séquence de la paire suivante $P_{i + 1}$ et si c'est le cas, on propage la
-		différence entre ces nombres vers les séquences du dessous.
+	\item vers le bas, c'est-à-dire, pour une paire $P_{i}$, nous regardons si
+		entre deux nucléotides de la deuxième composante de $P_{i}$, le nombre
+		de gaps est plus grand qu'entre les deux mêmes nucléotides de la
+		première séquence de la paire suivante $P_{i + 1}$ et si c'est le cas,
+		nous propageons la différence entre ces nombres vers les séquences du
+		dessous.
 	\item vers le haut par le même procédé que pour la propagation vers le bas
-		sauf que nous propageons les gaps qui sont plus présents dans la
+		si ce n'est que nous propageons les gaps qui sont plus présents dans la
 		première composante de la paire $P_{i + 1}$ que dans la deuxième
-		composante de paire $P_{i}$ et qu'on propage alors la différence de gaps
-		vers les séquences du dessus.
+		composante de paire $P_{i}$ et que nous propageons alors la différence
+		de gaps vers les séquences du dessus.
 \end{enumerate}
 
-Grace à ce procédé, nous sommes sûrs que les séquences résultantes des
+\todo{Insérer un exemple d'après propagation.}
+
+Grâce à ce procédé, nous sommes sûrs que les séquences résultantes des
 alignements semi-globaux sont bien les mêmes et que l'ordre renvoyé par le greedy
 est toujours le même (car l'ordre des scores reste le même).
 
 \subsubsection{Représentation d'une séquence pour l'alignement}
 \label{subsubsection:repr_sequence_alignment}
 
-Au vu de cette méthode de propagation de gaps, le procédé d'alignement n'est
+Au vu de la méthode de propagation de gaps utilisée, le procédé d'alignement n'est
 donc qu'un ajout de gaps entre nucléotides: il est alors intéressant de
 représenter les séquences alignées comme des séquences sans gaps où, après
 chaque nucléotide de la séquence, nous retenons, dans un tableau d'entier, le
@@ -72,8 +77,7 @@ l'insertion de gaps ne demande pas plus d'espace mémoire: qu'importe si nous
 devons insérer $2$ gaps ou $10000$ gaps car nous ne faisons qu'augmenter la case
 correspondante du tableau \verb|nb_gaps|. \footnote{Avec la représentation sous
 	forme de byte (1 octet en Java), cette nouvelle abstraction est intéressante
-si nous devons ajouter plus de 7 gaps entre chaque nucléotide (un entier prenant
-8 octets), ce qui peut arriver si nous travaillons sur de grandes séquences.} La
+si nous devons ajouter plus de 7 gaps entre chaque nucléotide, ce qui peut arriver si nous travaillons sur de grandes séquences.} La
 plupart des méthodes ont alors une complexité relative à la taille de la
 séquence \textit{initiale}, et non la séquence alignée et vu que l'insertion de
 gaps ne modifie jamais la taille de la séquence initiale, nous
@@ -156,7 +160,7 @@ le bas puis vers le haut.
 Les méthodes s'occupant de la propagation se trouvent dans la classe
 \verb|ConsensusAbstract|.
 
-Avant tout, en se rappelant que le chemin hamiltonien qui nous est renvoyé ne
+Avant tout, en se rappelant que le chemin hamiltonien retourné par le greedy ne
 tient pas compte de l'offset, il faut le calculer. La méthode
 \verb|computeOffset| s'occupe, en $O(k)$ où $k$ est la longueur du chemin
 hamiltonien, de mettre à jour les offsets des séquences du chemin en alignant
@@ -182,17 +186,17 @@ nucléotides, la différence se situant dans le nombre de gaps entre
 chaque) si $t_{i}$ comporte plus de gaps que $s_{i + 1}$.
 
 S'il y a plus de gaps dans $t_{i}$ que dans $s_{i + 1}$ entre les
-nucléotides $n_{j}$ et $n_{j + 1}$, ce que nous pouvons savoir en $O(1)$ grace à
+nucléotides $n_{k}$ et $n_{k + 1}$ (ce que nous pouvons savoir en $O(1)$ grâce à
 la nouvelle abstraction des séquences car il suffit de comparer le tableau des
-gaps à la position $j$, nous propageons la différence vers le bas.
+gaps à la position $k$), nous propageons la différence vers le bas.
 Cette propagation se fait à travers la méthode
 \verb|propageGapsDownFromPosition| (resp. \verb|propageGapsUpFromPosition|) qui
 prend deux paramètres: l'indice et le nombre de gaps à propager.
 
 Cette dernière méthode parcourt, à partir de la paire $P_{i} = (s_{i}, t_{i})$,
-toutes les paires $P_{j} = (s_{j}, t_{j})$, $i < j \leq n$ et ajoute les $n$
-gaps nécessaires dans les segments $s_{j}$ et $t_{j}$. Supposons que nous devons
-propager $n$ gaps venant d'entre les nucléotides $n_{k}$ et $n_{k + 1}$ de
+toutes les paires $P_{j} = (s_{j}, t_{j})$, $i < j \leq n$ et ajoute le nombre
+de gaps demandé dans les segments $s_{j}$ et $t_{j}$. Supposons que nous devons
+propager des gaps venant d'entre les nucléotides $n_{k}$ et $n_{k + 1}$ de
 $t_{i}$, c'est-à-dire que nous devons insérer dans $s_{i + 1}$ après l'indice
 $k$.
 
@@ -203,15 +207,15 @@ L'insertion se fait de manière récursive sur $j$:
 		1}$ de $s_{i + 1}$. Cette insertion se fait grâce à la méthode
 		\verb|addGapsAfterIndiceAndReturnPosition| sur $s_{i + 1}$ (en $O(m)$,
 		$m$ étant la taille de la séquence initiale d'où provient $t_{i}$) et on
-		récupère en plus la position absolue d'insertion (ce qui provoque le $m$
+		récupère en plus la position absolue d'insertion (ce qui génère le $m$
 		dans la complexité de la méthode car nous devons calculer à la volée la
 		position absolue). Cette position absolue va permettre de savoir où il
-		faut propager les gaps dans la séquence $t_{i + 1}$. Grace à cette
-		position, on utilise la méthode \verb|addGapsAndReturnIndice| sur $t_{i
-		+ 1}$ pour insérer les gaps où il faut, et nous récupérons en même temps
-		l'indice du nucléotide de $t_{i + 1}$ après lequel les gaps ont été
-		ajoutés. Cette dernière méthode est également en $O(m)$, toujours pour
-		la même raison que précédemment.
+		faut propager les gaps dans la séquence $t_{i + 1}$. Grâce à cette
+		position $p$, on utilise la méthode \verb|addGapsAndReturnIndice| sur $t_{i
+		+ 1}$ pour insérer les gaps à la position $p$, et nous récupérons en
+		même temps l'indice du nucléotide de $t_{i + 1}$ après lequel les gaps
+		ont été ajoutés. Cette dernière méthode est également en $O(m)$,
+		toujours pour la même raison que précédemment.
 	\item[$\bullet$] Pour $j > i + 1$, nous répétons l'opération du cas de base mais cette
 		fois-ci, nous utilisons l'indice que la méthode
 		\verb|addGapsAndReturnIndice| nous a renvoyé à l'étape $j - 1$.
@@ -256,7 +260,7 @@ complexité de
 \subsection{Consensus}
 \label{subsection:consensus}
 
-Grace à l'alignement précédemment réalisé, nos paires $P_{i}$ et $P_{i + 1}$ ont
+Grâce à l'alignement précédemment réalisé, les paires $P_{i}$ et $P_{i + 1}$ ont
 maintenant la même séquence respectivement en deuxième composante et en première
 composante et toutes les séquences sont maintenant bien alignées. Pour
 construire le contig final, nous allons parcourir chaque colonne de l'alignement
