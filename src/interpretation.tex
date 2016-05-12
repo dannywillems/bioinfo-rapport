@@ -10,17 +10,8 @@ Le principe du dotmatcher est de comparer deux séquences $s$ et $t$ données en
 entrée: le dotmatcher parcourt les séquences en comparant chaque nucléotide
 entre eux.  Lorsqu'un correspondance est faite, un point est tracé sur un
 graphique. Une option, appelée \textit{thresold} peut être ajustée pour dissiper
-le bruit.
-
-\FloatBarrier
-
-%\begin{center}
-	%\begin{figure}
-		%\includegraphics[scale= 0.4]{../res/cible1.png}
-		%Exemple de graphique obtenu à partir du dotmatcher
-	%\end{figure}
-%\end{center}
-
+le bruit. Une valeur de 50 a été utilisée pour l'option \textit{threshold} comme
+demandé.
 
 Pour chaque nucléotide $s_{i}$ de la séquence $s$ et chaque nucléotide $t_{j}$
 de la séquence $t$, le dotmatcher va tracer un point s'il y a une correspondance
@@ -33,18 +24,22 @@ obtenue.
 
 Nous souhaitons, à travers ces graphiques, étudier le comportement de notre
 séquence obtenue en regardant si chaque morceau de la séquence cible est bien
-atteinte, ceci se remarquant à travers les morceaux de droites. Pour cela, il
+atteinte, ceci se remarquant à travers les morceaux de droites car ceux-ci
+reflètent une suite de nucléotides qui correspondent. Pour cela, il
 suffit de projeter chaque droite obtenue sur l'axe X et regarder si l'ensemble
 recouvre globalement la séquence de départ.
 
 \subsubsection*{Cible 1}
 
 Au niveau de la première cible, nous remarquons d'abord que la séquence que nous
-avons obtenue est trop longue ($\simeq$ 14 000 vs $\simeq$ 9000).
+avons obtenue est plus longue que la séquence cible fournie ($\simeq$ 14 000 vs
+$\simeq$ 9000).
 
-Les résultats sont meilleurs pour le premier que pour son complémentaire
+Les résultats sont meilleurs pour le normal que pour son complémentaire
 inversé. Le recouvrement du premier est presque global, les intervalles non
-couverts se trouvant aux alentours de 1000 et 7000.
+couverts se trouvant aux alentours de 1000 et 7000. Quant au complémentaire
+inversé, il y a un intervalle non couvert entre 2000 et 4000 ainsi que des
+petits intervalles entre chaque segments.
 
 Nous remarquons, à travers les droites, que nous avons de longues successions de
 correspondances.
@@ -72,10 +67,10 @@ correspondances.
 Quant à la seconde cible, bien que nous obtenons des résultats assez éparpillés,
 le recouvrement est assez grand, aussi bien pour le normal que son
 complémentaire inversé.
-Le graphique du complémentaire inversé comprend tout de même plus de droites, et
-plus longues aussi que le normal.
+Le graphique du complémentaire inversé comprend tout de même plus de droites et
+celles-ci sont plus longues que celles du normal.
 
-Nous obtenons également une trop grande séquence: la cible est contient environ
+Nous obtenons également une plus grande séquence: la cible contient environ
 118000 nucléotides tandis que notre alignement en contient 190000.
 
 \begin{figure}[!ht]
@@ -105,7 +100,7 @@ recouvrant environ 65\% de la séquence cible.
 Pour son complémentaire inversée, le recouvrement est plus éparpillé mais reste
 tout de même assez global.
 
-Comme les 2 premières séquences, nous obtenons une séquence trop longue.
+Comme les 2 premières séquences, nous obtenons une séquence plus longue.
 
 \begin{figure}[!ht]
 	\begin{minipage}[r]{.46\linewidth}
@@ -129,13 +124,13 @@ Comme les 2 premières séquences, nous obtenons une séquence trop longue.
 
 Pour la dernière cible, la 5, nous obtenons aussi plusieurs segments de droites,
 plus ou moins grands, recouvrant la majorité de la séquence cible (un peu plus
-de 90\%). Les endroits où les deux séquences ne matchent pas se situent aux
+de 90\%). Les endroits où les deux séquences ne correspondent pas se situent aux
 alentours de 3000 et 7500. Le complémentaire inversé remplit également une bonne
 partie de la séquence cible mais il y a plus d'intervalles où les séquences ne
 se correspondent pas.
 
 Comme pour les séquences précédentes, notre algorithme nous renvoie une séquence
-trop longue (environ 6000 nucléotides de trop).
+plus longue (environ 6000 nucléotides de plus).
 
 \begin{figure}[!ht]
 	\begin{minipage}[r]{.46\linewidth}
@@ -163,13 +158,17 @@ pour la cible 4), soit de manière continue (longue droite, comme les cible 1 et
 4), soit un peu éparpillé (segments de droite recouvrant de 10 à 40\%, cible 5),
 soit très éparpillé (petits segments de droites, cible 2).
 
+Chaque séquence obtenue est plus grande que la séquence cible: cela pourrait
+provenir des erreurs contenus dans les collections.
+
 \subsection{Autres implémentations}
 
-Nous avons également tenté de changer l'implémentation du Greedy en changeant
-le comparateur d'arcs, en prévilégiant les nombres de gaps finaux et initiaux
-dans l'alignement semi-global ainsi qu'en propageant les gaps à la fin. Ces
-méthodes ont donné des résultats différents mais pas aussi bons que ceux obtenus
-initialement.
+Nous avons également tenté de changer l'implémentation du Greedy en modifiant
+le comparateur d'arcs pour privilégier les alignements ayant une plus grande
+sous-séquence commune.
+
+Ces méthodes ont donné des résultats un peu différents mais pas aussi bons que
+ceux obtenus initialement.
 
 Par exemple, lorsque deux arcs ont un même score, nous avons tenté de
 privilégier les arcs qui ont une plus longue sous-séquence commune Cette méthode
