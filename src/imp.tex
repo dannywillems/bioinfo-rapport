@@ -8,7 +8,7 @@
 	\begin{description}
 		\item[Récupération et stockage des données] Afin de pouvoir former le contig souhaité, il est nécessaire de récupérer les séquences et de les stocker de manière efficace. Cette étape est expliquée dans la section~\ref{subsection:recStock}.
 
-		\item[1.Alignement semi-global] Ensuite, pour chaque paire de séquences,
+		\item[1. Alignement semi-global] Ensuite, pour chaque paire de séquences,
 			nous effectuons un \emph{alignement semi-global} en nous inspirant
 			de l'algorithme vu en cours. Cette méthode nous donne ainsi
 			les chevauchements approximatifs des deux séquences, ce qui permet de
@@ -17,7 +17,7 @@
 			grande chaine qui est suffixe de $s$ et préfixe de $t$ (à erreurs de séquençage près). Cette étape
 			est expliquée dans la section~\ref{subsection:semiGlobal}.
 
-		\item[2.Algorithme greedy] Une fois les alignements approximatifs
+		\item[2. Algorithme greedy] Une fois les alignements approximatifs
 			calculés, il est encore nécessaire de trouver dans quel ordre
 			ceux-ci doivent être assemblés afin de former le meilleur contig.
 			Pour ce faire, nous utilisons un \emph{algorithme glouton} qui, à
@@ -25,15 +25,15 @@
 			reconstituer le contig. Cette étape est expliquée dans la
 			section~\ref{subsection:greedy}.
 
-		\item[3.Alignement]
+		\item[3. Alignement]
 			L'algorithme glouton nous donnant, dans l'ordre, les séquences à
 			aligner, il est nécessaire de reconstruire cet alignement en
 			ajoutant des gaps pour que chaque séquence ait la même longueur et
 			qu'on puisse calculer le consensus. Cette étape est expliquée dans
 			la section ~\ref{subsection:alignment}.
 
-		\item[4.Consensus]
-			Après que l'alignement a été réalisé, il nous faut calculer le
+		\item[4. Consensus]
+			Après que l'alignement ait été réalisé, il nous faut calculer le
 			consensus en fonction de ce dernier. Cette étape est expliquée dans
 			la section ~\ref{subsection:consensus}.
 	\end{description}
