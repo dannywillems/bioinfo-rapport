@@ -41,9 +41,10 @@
 \subsection{Récupération et stockage des données}
 \label{subsection:recStock}
 
-Des sous-séquences brutes d'ADN sont stockées dans des fichiers au format FASTA, il nous est donc nécessaire de les récupérer. Cette étape est effectuée au travers des classes \verb|FastaReader| et \verb|Sequence|. De plus, la classe \verb|FastaWriter| est utilisée afin de récupérer le résultat du procédé visant à trouver le meilleur contig.\\
+Des sous-séquences brutes d'ADN sont stockées dans des fichiers au format FASTA, il nous est donc nécessaire de les récupérer. Cette étape est effectuée au travers des classes \verb|FastaReader| et \verb|Sequence|. En effet, la classe \verb|FastaReader| génère une liste de séquences à partir des séquences stockées dans le fichier FASTA. De plus, la classe \verb|FastaWriter| est utilisée afin de récupérer le résultat du procédé visant à trouver le meilleur contig.
+\\
 
-La classe \verb|Segment| permet de stocker sous forme d'un tableau de Bytes un fragment d'ADN. Nous prenons la convention suivante quant à la représentation des nucléotides et d'un gap:
+La classe \verb|Segment| permet de stocker sous forme d'un tableau d'octets un fragment d'ADN. Nous prenons la convention suivante quant à la représentation des nucléotides et d'un gap:
 	\begin{center}
 		\begin{tabular}{|l|c|}
 			\hline
@@ -64,29 +65,35 @@ La classe \verb|Segment| permet de stocker sous forme d'un tableau de Bytes un f
 		\end{tabular}
 	\end{center}
 
-	Le fait de stocker les nucléotides sous forme de Bytes permet de réduire l'espace mémoire nécessaire pour retenir en mémoire une séquence d'ADN. En effet, si nous avions stocké naïvement les séquences sous forme d'un String chaque caractère de la chaîne prendrait 4 octets 
-
-	  Elle contient également des méthodes intéressantes telles que \textsc{complement} qui permet de complémenter et inverser une séquence d'ADN ainsi que d'autres méthodes comme \textsc{backTrack} et \textsc{semiGlobalAlignment} qui sont utiles pour l'étape décrite dans la section~\ref{subsection:semiGlobal} ou encore \textsc{arcGenerator} qui est expliquée dans la section~\ref{subsection:greedy}.\\
-
-La classe \verb|FastaReader| permet à partir d'un \emph{fichier Fasta} de générer un liste d'objets \verb|Sequence| représentant les fragments d'ADN. \\
-
-L'opération inverse est possible grâce à la classe \verb|FastaWriter|.
-
-
-
-
+	Le fait de stocker les nucléotides sous forme de Bytes permet de réduire l'espace mémoire nécessaire pour retenir en mémoire une séquence d'ADN. En effet, si nous avions stocké naïvement les séquences sous forme d'un String chaque caractère de la chaîne prendrait 4 octets contre 1 octet les caractères à l'aide d'un byte.
 
 \subsection{Alignement semi-global}
 \label{subsection:semiGlobal}
 
-Une des premières étapes de la démarche est d'effectuer l'alignement semi-global
-entre deux fragments. Cette étape permet de tester la similarité entre les deux
-fragments que l'on veut aligner. L'alignement semi-global est implémenté dans la
-classe \verb|Sequence| via la fonction \textsc{semiGlobalAlignement}. Cette
-méthode prend deux fragments $f$ et $g$, des coûts de match, missmatch et gap
-et calcule l'alignement tel que $f$ précède $g$ (alignement de type ($f,g$))et celui tel que $g$ précède $f$ (alignement de type ($g,f$)) et
-renvoie le résultat sous forme d'une liste de \verb|SequenceAlignement|. Ce comportement est un peu différent de celui du cours, 
-car dans ce dernier on se contentait de garder le meilleur des deux alignements. Ici nous sommes intéressés à la fois  au meilleur alignement suffixe-prefixe de $f$ avec $g$ mais également le cas inverse ($g$ avec $f$). Ces deux situations sont illustrés à la figure~\ref{fig:alignementType}.
+Une des premières étapes de notre démarche est d'effectuer un alignement semi-global
+de deux séquences. Le calcul d'une matrice de similarités entre les deux séquences à aligner doit être effectué. A partir de certaines valeurs associées à un gap ( ex: \begin{tabular}{c} A \\ - \end{tabular} ou \begin{tabular}{c} - \\ A \end{tabular} ), à un match (\begin{tabular}{c} A \\ A \end{tabular}) et à un missmatch (\begin{tabular}{c} A \\ C \end{tabular}) celle-ci permet de calculer les différents scores des alignements possibles entre les deux séquences. Dans le cadre d'un alignement semi-global, le score d'alignement correspond à la somme des scores 
+Dans le cadre de ce projet, nous utilisons les valeurs suivantes:
+
+\begin{center}
+	\begin{tabular}{|l|c|}
+		\hline
+		 & Valeur \\
+		\hline
+		\hline
+		match & 1 \\
+		\hline
+	 	missmatch & -1\\
+		\hline
+		gap &  -2 \\
+		\hline
+	\end{tabular}
+\end{center}
+
+
+
+
+
+ L'alignement semi-global est implémenté dans la classe \verb|Sequence| via la fonction \emph{semiGlobalAlignement} qui utilise la fonction \emph{computeSimMat} et \emph{backTrack}. Cette méthode prend deux séquences $f$ et $g$, les coûts de match, missmatch et gap et calcule l'alignement dont le score d'alignement est le plus élevé et  tel que $f$ précède $g$ - nous appelons cet alignement un alignement de type ($f,g$) - et celui tel que $g$ précède $f$ - nous appelons cet alignement un alignement de type ($g,f$)- et renvoie le résultat sous la forme d'une liste de \verb|SequenceAlignement|. Ce comportement est un différent de celui du cours, car dans ce dernier on se contentait de garder le meilleur des deux alignements du point de vue du score d'alignement. Ici nous sommes intéressés à la fois  au meilleur alignement suffixe-prefixe de $f$ avec $g$ mais également le cas inverse ($g$ avec $f$). Ces deux situations sont illustrés à la figure~\ref{fig:alignementType}.
 On remarque que lorsque l'on calcule la matrice de similarité, si le fragment $f$ est placé sur l'axe vertical et si le fragment $g$ est placé sur l'axe horizontal, on trouve le score d'alignement de type $(f,g)$ en prenant le maximum sur la dernière ligne de la matrice. En effet, cela signifie que l'on a parcouru tous les éléments de la séquence $f$ avant de finir le parcours des éléments de la séquence $g$. De la même manière on trouve les alignements de type $(g,f)$ en prenant le maximum de la dernière colonne de la matrice.\\
 
 \begin{figure}
@@ -102,32 +109,32 @@ On remarque que lorsque l'on calcule la matrice de similarité, si le fragment $
 			Alignement de type (g,f)
 		\end{center}
 			  \end{minipage}
-		\caption{Alignements résultants de l'alignement de f et de g}
+		\caption{Résultats de l'alignement de f et de g}
 		\label{fig:alignementType}
 \end{figure}
 
 
 Un objet de la classe \verb|SequenceAlignement| est défini de la manière
-suivante: le segment $f$ aligné avec le segment $g$ en supposant que le
+suivante: le fragment $f$ aligné (stocké dans l'argument \emph{s1}) avec le segment $g$ (stocké dans l'argument \emph{s2}) en supposant que le
 segment $f$ est le segment le plus à \og gauche \fg.
 
-De plus, dans la classe \verb|Sequence| nous retrouvons la méthode \emph{arcGenerator} qui à partir de deux fragments $f$ et $g$ calcule tous les alignements possibles. C'est-à-dire, si on considère que $\overline{f}$ est le fragment complémentaire inversé de $g$, alors on calcule:\\
+De plus,  dans la classe \verb|Sequence| nous retrouvons la méthode \emph{arcGenerator} qui à partir de deux fragments $f$ et $g$ calcule les alignements suivants:\\
 \begin{itemize}
-	\item[$\bullet$] L'alignement $(f,g)$ ainsi que $(g,f)$;
-	\item[$\bullet$] L'alignement de $(\overline{f},g)$ ainsi que $(g, \overline{f})$;
-	\item[$\bullet$] L'alignement de $(f, \overline{g})$ ainsi que $(\overline{g},f)$;
-	\item[$\bullet$] L'alignement de $(\overline{f}, \overline{g})$ ainsi que $(\overline{g}, \overline{f})$.
+	\item[$\bullet$] Les alignements $(f,g)$ et $(g,f)$;
+	\item[$\bullet$] Les alignements $(\overline{f},g)$ et $(g, \overline{f})$;
+	\item[$\bullet$] Les alignements $(f, \overline{g})$ et $(\overline{g},f)$;
+	\item[$\bullet$] Les alignements  $(\overline{f}, \overline{g})$ et $(\overline{g}, \overline{f})$.
 \end{itemize}
-$ $\\
+Où $\overline{f}$ est le fragment complémentaire inversé de $f$.\\
 Au vu des explications ci-dessus, il est important de remarquer que pour trouver les 8 alignements il n'est nécessaire de calculer uniquement 4 matrices de similarités (une pour chaque paire de l'énumération ci-dessus).\\
 
-A partir de ces alignements nous construisons les objets \verb|Arc|. Un objet arc possède en attribut:\\
+A partir de ces alignements, nous représentons les relations entre toutes les paires d'alignement sous la forme d'arcs. Un arc possède les attributs suivants:\\
 
 \begin{itemize}
-	\item[$\bullet$] Les fragments $f$ et $g$ initiaux qui sont utilisés lors de l'alignement. Ceux-ci sont stockés dans des attributs \emph{start} et \emph{end} pour savoir respectivement s'il s'agit de l'origine ou de l'extrémité de l'arc.
-	\item[$\bullet$] Des booléens relatifs à $f$ et $g$ (un pour chacun) qui permettent de savoir si on considère le complémentaire inversé lors de l'alignement.
+	\item[$\bullet$] Les fragments $f$ et $g$ initiaux qui sont utilisés lors de l'alignement. Ceux-ci sont stockés dans les attributs \emph{start} et \emph{end} qui représentent respectivement l'origine et de l'extrémité de l'arc.
+	\item[$\bullet$] Des booléens relatifs à $f$ et $g$ - respectivement \emph{startComp} et \emph{endComp} qui permettent de savoir si on considère le complémentaire inversé lors de l'alignement.
 	\item[$\bullet$] Le score correspondant à l'alignement.
-	\item[$\bullet$] Un booléen \emph{inside} qui permet de déterminer si lors de l'alignement un des deux fragments est inclus à l'autre.
+	\item[$\bullet$] Un booléen \emph{inside} qui permet de déterminer si, lors de l'alignement, un des deux fragments est inclus à l'autre.
 	
 \end{itemize}
 
