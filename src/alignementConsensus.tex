@@ -11,13 +11,13 @@ qui calcule le consensus.
 
 Pour calculer l'alignement, nous utilisons les segments alignés dans l'ordre
 donné par l'algorithme greedy décrit à l'étape \ref{subsection:greedy}.
-L'algorithme greedy nous ressort une liste de paires de séquences $P_{i}$ tel
+L'algorithme greedy nous donne une liste de paires de séquences $P_{i}$ tel
 que le deuxième segment de la paire $P_{i}$ provient du même segment initial que
 le premier de la paire $P_{i + 1}$, la différence entre ces deux séquences se
 situant dans les gaps ajoutés lors de l'alignement semi-global entre les
 nucléotides pour offrir le meilleur score pour chaque paire.
 
-\todo{Insérer un exemple de la sortie du greedy.}
+%\todo{Insérer un exemple de la sortie du greedy.}
 
 Pour pouvoir construire le contig final, il nous faut réaligner convenablement
 chaque paire de segments et, pour cela, nous propageons les gaps qui ont été
@@ -38,17 +38,23 @@ propagation en deux temps:
 		de gaps vers les séquences du dessus.
 \end{enumerate}
 
-\todo{Insérer un exemple d'après propagation.}
+%\todo{Insérer un exemple d'après propagation.}
 
-Grâce à ce procédé, nous sommes sûrs que les séquences résultantes des
-alignements semi-globaux sont bien les mêmes et que l'ordre renvoyé par le greedy
-est toujours le même (car l'ordre des scores reste le même).
+Si nous posons $P_{i} = (s_{i}, t_{i})$, ce procédé nous permet d'être sûr que
+les séquences $t_{i}$ et $s_{i + 1}$ sont bien les mêmes et alignées car les
+gaps insérés lors des alignements semi-globaux ont été propagés dans ces deux
+séquences.
+
+Avant de décrire les algorithmes, nous introduisons une nouvelle abstraction des
+séquences qui facilitera la propagation des gaps, que cela soit au niveau
+complexité mémoire ou complexité temps qu'au niveau de l'implémentation des
+algorithmes de propagations.
 
 \subsubsection{Représentation d'une séquence pour l'alignement}
 \label{subsubsection:repr_sequence_alignment}
 
-Au vu de la méthode de propagation de gaps utilisée, le procédé d'alignement n'est
-donc qu'un ajout de gaps entre nucléotides: il est alors intéressant de
+Au vu de la méthode de propagation de gaps utilisée, le procédé d'alignement
+consiste en un ajout de gaps entre nucléotides: il est dès alors intéressant de
 représenter les séquences alignées comme des séquences sans gaps où, après
 chaque nucléotide de la séquence, nous retenons, dans un tableau d'entier, le
 nombre de gaps suivant celui-ci.\footnote{Une même représentation peut être
@@ -63,18 +69,17 @@ contenant les entiers {2, 1, 1, 0} car il y a deux gaps après le premier
 nucléotide, un gap après le second, un après le troisième, et 0 à la fin. Les
 complexités en temps et en mémoire sont ainsi diminuées car la plupart des
 algorithmes travaillent avec la séquence initiale.
-Au niveau de la mémoire, une séquence alignée se voit ainsi 'compressée' en la
-séquence initiale et les gaps ne sont qu'une information supplémentaire ajoutée
-à la séquence initiale.
+Au niveau de la mémoire, une séquence alignée est alors la
+séquence initiale muni d'un tableau d'entier de gaps.
 
-L'ajout de gaps sera alors très simple et très rapide en complexité. En effet,
+L'ajout de gaps est alors simple et rapide en complexité. En effet,
 si nous souhaitons ajouter un gap à la position 2 (supposons qu'on commence à
 calculer en 0) à la séquence \verb|A--T-G-C| pour obtenir \verb|A---T-G-C|, il
 nous suffira d'augmenter de 1 le nombre de gaps après le nucléotide A: nous
 obtiendrons alors le tableau {3, 1, 1, 0}. Cet ajout de gap peut se faire en
 $O(n)$ où $n$ est la taille de la séquence \textit{initiale}. De plus,
-l'insertion de gaps ne demande pas plus d'espace mémoire: qu'importe si nous
-devons insérer $2$ gaps ou $10000$ gaps car nous ne faisons qu'augmenter la case
+l'insertion de gaps ne demande pas plus d'espace mémoire: qu'importe le nombre
+de gaps, nous ne faisons qu'augmenter la case
 correspondante du tableau \verb|nb_gaps|. \footnote{Avec la représentation sous
 	forme de byte (1 octet en Java), cette nouvelle abstraction est intéressante
 si nous devons ajouter plus de 7 gaps entre chaque nucléotide (ce qui ferait un
