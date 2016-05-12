@@ -4,15 +4,47 @@
 
 \subsection{Résultats finaux}
 
-Expliquer le principe du dotmatch , avec "projection sur l'axe x"
+Pour étudier les résultats que notre programme nous retourne, nous avons utilisé
+un \textit{dotmatcher}.
+Le principe du dotmatcher est de comparer deux séquences $s$ et $t$ données en
+entrée: le dotmatcher parcourt les séquences en comparant chaque nucléotide
+entre eux.  Lorsqu'un correspondance est faite, un point est tracé sur un
+graphique. Une option, appelée \textit{thresold} peut être ajustée pour dissiper
+le bruit.
 
-Interprétaiton des résultats -> ça couvre globalement bien sauf pe pour la 2 + dire qu'il y en a qui sont trop longs! (ou trop court)
+\begin{center}
+	\begin{figure}[c]
+		\includegraphics[scale= 0.4]{../res/cible1.png}
+		Exemple de graphique obtenu à partir du dotmatcher
+	\end{figure}
+\end{center}
+
+Pour chaque nucléotide $s_{i}$ de la séquence $s$ et chaque nucléotide $t_{j}$
+de la séquence $t$, le dotmatcher va tracer un point s'il y a une correspondance
+entre les deux nucléotides.
+
+Pour chaque comparaisons de séquences, nous obtenons donc un rectangle de
+points. Sur l'axe X, nous avons la longueur de la séquence que nous devons
+obtenir, et sur l'axe Y, nous avons la longueur de la séquence que nous avons
+obtenue.
+
+Nous souhaitons, à travers ces graphiques, étudier le comportement de notre
+séquence obtenue en regardant si chaque morceau de la séquence cible est bien
+atteinte, ceci se remarquant à travers les morceaux de droites. Pour cela, il
+suffit de projeter chaque droite obtenue sur l'axe X et regarder si l'ensemble
+recouvre globalement la séquence de départ.
 
 \noindent\textbf{Cible 1}
 
+Au niveau de la première cible, nous remarquons d'abord que la séquence que nous
+avons obtenue est trop longue ($\simeq$ 14 000 vs $\simeq$ 9000).
 
+Les résultats sont meilleurs pour le premier que pour son complémentaire
+inversé. Le recouvrement du premier est presque global, les intervalles non
+couverts se trouvant aux alentours de 1000 et 7000.
 
-
+Nous remarquons, à travers les droites, que nous avons de longues successions de
+correspondances.
 
 \begin{figure}[!ht]
 	\begin{minipage}[r]{.46\linewidth}
@@ -32,9 +64,13 @@ Interprétaiton des résultats -> ça couvre globalement bien sauf pe pour la 2 
 
 \FloatBarrier
 
-
 \noindent\textbf{Cible 2}
 
+Quant à la seconde cible, bien que nous obtenons des résultats assez éparpillés,
+le recouvrement est assez grand, aussi bien pour le normal que son
+complémentaire inversé.
+Le graphique du complémentaire inversé comprend tout de même plus de droites, et
+plus longues aussi que le normal.
 
 \begin{figure}[!ht]
 	\begin{minipage}[r]{.46\linewidth}
@@ -45,7 +81,7 @@ Interprétaiton des résultats -> ça couvre globalement bien sauf pe pour la 2 
 \end{minipage} \hfill
 \begin{minipage}[c]{.46 \linewidth}
 	\begin{center}
-			%\includegraphics[scale= 0.4]{../res/cible2-ic.png}
+			\includegraphics[scale= 0.4]{../res/cible2-ic.png}
 			Résultat de la collection 2, complémenté et inversé
 		\end{center}
 	\end{minipage}
@@ -54,8 +90,14 @@ Interprétaiton des résultats -> ça couvre globalement bien sauf pe pour la 2 
 
 \FloatBarrier
 
-
 \noindent\textbf{Cible 4}
+
+Les résultats pour la cible 4 sont plutôt satisfaisantes comme pour les cibles 1
+et 5. Nous obtenons un recouvrement global ainsi qu'une longue droite recouvrant
+environ 85\% de la séquence cible.
+
+Pour son complémentaire inversée, le recouvrement est plus éparpillé mais reste
+tout de même assez global.
 
 \begin{figure}[!ht]
 	\begin{minipage}[r]{.46\linewidth}
@@ -75,8 +117,12 @@ Interprétaiton des résultats -> ça couvre globalement bien sauf pe pour la 2 
 
 \FloatBarrier
 
-
 \noindent\textbf{Cible 5}
+
+Pour la dernière cible, la 5, nous obtenons aussi un segment de droite
+recouvrant la majorité de la séquence cible (un peu plus de 60\%) ainsi qu'un
+recouvrement général plutôt global. Comme pour la cible 4, le dotmatcher du
+complémentaire inversé est plus éparpillé.
 
 \begin{figure}[!ht]
 	\begin{minipage}[r]{.46\linewidth}
@@ -94,25 +140,24 @@ Interprétaiton des résultats -> ça couvre globalement bien sauf pe pour la 2 
 	\caption{Résultat de la collection 5}
 \end{figure}
 
-
-
 \FloatBarrier
 
 \subsection{Autres implémentations}
 
 Nous avons également tenté de changer l'implémentation du Greedy en changeant
 le comparateur d'arcs, en prévilégiant les nombres de gaps finaux et initiaux
-dans l'alignement semi-global des séquences ou en propageant les gaps à la fin.
+dans l'alignement semi-global ainsi qu'en propageant les gaps à la fin. Ces
+méthodes ont donné des résultats différents mais pas aussi bons que ceux obtenus
+initialement.
 
 Par exemple, lorsque deux arcs ont un même score, nous avons tenté de
-privilégier les arcs qui ont une plus longue sous-séquence commune, c'est-à-dire
-sans compter les gaps finaux et initiaux. Cette méthode ne nous a pas donné de
-mauvais résultats mais ils étaient moins bons.
+privilégier les arcs qui ont une plus longue sous-séquence commune Cette méthode
+ne nous a pas donné de mauvais résultats mais ils étaient moins bons.
 
 Dans le code soumis, nous avons prévilégié, lors de l'alignement semi-global,
 l'alignement avec le moins de gaps finaux et initiaux, c'est-à-dire en
 prenant le dernier maximum pour la dernière colonne et la dernière ligne. Nous
 avons tenté de prendre le premier maximum pour chacun d'entre eux, mais cela n'a
-pas donné de meilleurs résultats non plus.
+pas donné de meilleurs résultats.
 
 %Explication de la propagations des gaps à la fin.
