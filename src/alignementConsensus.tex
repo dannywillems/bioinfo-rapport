@@ -5,13 +5,13 @@
 
 Les deux dernières étapes que sont l'alignement et le consensus sont
 implémentées dans la classe \verb|ConsensusAbstract| à travers les méthodes
-\verb|computeAlignment| qui calcule l'alignement des séquences et le sauvegarde
-dans l'attribut \verb|alignment| ainsi qu'à travers la méthode \verb|build|
+\emph{computeAlignment} qui calculent l'alignement des séquences et le sauvegardent
+dans l'attribut \emph{alignment} ainsi qu'à travers la méthode \emph{build}
 qui calcule le consensus.
 
 Pour calculer l'alignement, nous utilisons les segments alignés dans l'ordre
-donné par l'algorithme greedy décrit à l'étape \ref{subsection:greedy}.
-L'algorithme greedy nous donne une liste de paires de séquences $P_{i}$ tel
+donné par l'algorithme glouton décrit à l'étape \ref{subsection:greedy}.
+Cet algorithme nous donne une liste de paires de séquences $P_{i}$ telles
 que le deuxième segment de la paire $P_{i}$ provient du même segment initial que
 le premier de la paire $P_{i + 1}$, la différence entre ces deux séquences se
 situant dans les gaps ajoutés lors de l'alignement semi-global entre les
@@ -28,7 +28,7 @@ propagation en deux temps:
 	\item vers le bas, c'est-à-dire, pour une paire $P_{i}$, nous regardons si
 		entre deux nucléotides de la deuxième composante de $P_{i}$, le nombre
 		de gaps est plus grand qu'entre les deux mêmes nucléotides de la
-		première séquence de la paire suivante $P_{i + 1}$ et si c'est le cas,
+		première séquence de la paire suivante $P_{i + 1}$. Si c'est le cas,
 		nous propageons la différence entre ces nombres vers les séquences du
 		dessous.
 	\item vers le haut par le même procédé que pour la propagation vers le bas
@@ -54,17 +54,17 @@ algorithmes de propagations.
 \label{subsubsection:repr_sequence_alignment}
 
 Au vu de la méthode de propagation de gaps utilisée, le procédé d'alignement
-consiste en un ajout de gaps entre nucléotides: il est dès alors intéressant de
+consiste en un ajout de gaps entre nucléotides: il est dès lors intéressant de
 représenter les séquences alignées comme des séquences sans gaps où, après
-chaque nucléotide de la séquence, nous retenons, dans un tableau d'entier, le
+chaque nucléotide de la séquence, nous retenons, dans un tableau d'entiers, le
 nombre de gaps suivant celui-ci.\footnote{Une même représentation peut être
 	utilisée pour représenter pour les nucléotides successifs identiques: nous
 	compressons ainsi la séquence. Nous n'avons souhaité compresser que les gaps
-	car nous n'allons travailler qu'avec ceux-ci, et cela aurait complexifié
+	car nous ne travaillons qu'avec ceux-ci, et cela aurait complexifié
 l'implémentation des méthodes.}
 
-Par exemple, la séquence \verb|A--T-G-C| sera représentée par une séquence
-\verb|ATGC| et par un tableau nommé \verb|nb_gaps| de taille 4
+Par exemple, la séquence \verb|A--T-G-C| est représentée par une séquence
+\verb|ATGC| et par un tableau nommé \emph{$nb_gaps$} de taille 4
 contenant les entiers {2, 1, 1, 0} car il y a deux gaps après le premier
 nucléotide, un gap après le second, un après le troisième, et 0 à la fin. Les
 complexités en temps et en mémoire sont ainsi diminuées car la plupart des
@@ -80,7 +80,7 @@ obtiendrons alors le tableau {3, 1, 1, 0}. Cet ajout de gap peut se faire en
 $O(n)$ où $n$ est la taille de la séquence \textit{initiale}. De plus,
 l'insertion de gaps ne demande pas plus d'espace mémoire: qu'importe le nombre
 de gaps, nous ne faisons qu'augmenter la case
-correspondante du tableau \verb|nb_gaps|. \footnote{Avec la représentation sous
+correspondante du tableau \emph{$nb_gaps$}. \footnote{Avec la représentation sous
 	forme de byte (1 octet en Java), cette nouvelle abstraction est intéressante
 si nous devons ajouter plus de 7 gaps entre chaque nucléotide (ce qui ferait un
 total de 8 octets, la taille que prend la nouvelle abstaction quelque soit le
@@ -95,7 +95,7 @@ qui est avantageux dans le cas d'insertions de très grands nombres de gaps.
 Un autre point positif est qu'il est très facile de connaitre la position où nous
 devons insérer des gaps s'il nous est demandé de rajouter $n$ gaps entre deux
 nucléotides: il suffit de connaitre la position du nucléotide dans la chaine
-initiale après lequel nous devons ajouter les $n$ gaps. Ce point sera utlisé
+initiale après lequel nous devons ajouter les $n$ gaps. Ce point sera utilisé
 lors de la propagation de gaps dans la section \ref{propagation_gaps}.
 
 Nous gardons également un attribut contenant l'offset de la séquence dans le
@@ -133,16 +133,16 @@ de l'offset.
 	de 3 car elles sont décalées de 3 vers la droite.
 
 	Lors du calcul de l'alignement, nous devrons nous souvenir de ces offsets.
-	Nous nous servirons alors de la méthode \verb|updateOffset| qui aura pour
+	Nous nous servirons alors de la méthode \emph{updateOffset} qui aura pour
 	but de mettre à jour l'attribut offset.
 \end{exemple}
 
 \begin{exemple} [Position relative et absolue]
 	Soit la séquence \verb|A--T-G-C| et considérons un offset de 4, c'est-à-dire
-	que 'réellement', la séquence est \verb|----A--T-G-C|.
+	que \og réellement \fg, la séquence est \verb|----A--T-G-C|.
 
 	En commençant de calculer à 0, le nucléotide à la position relative 3 est
-	\verb|T| tandis que ce même nucléotide est la position absolue $4 + 3 = 7$,
+	\verb|T| tandis que ce même nucléotide est à la position absolue $4 + 3 = 7$,
 	l'élément à la position absolue 3 étant le dernier gap avant le \verb|A|.
 \end{exemple}
 
@@ -155,7 +155,7 @@ Par la suite, nous travaillerons toujours avec la position \textit{absolue}.
 Cette abstraction des séquences est implémentée dans la classe
 \verb|SequenceAbstract|.\footnote{Cela justifie le nom de la classe
 	\verb|ConsensusAbstract| qui travaille avec des objets de la classe
-\verb|SequenceAbstract|, et non \verb|Squence|.}
+\verb|SequenceAbstract|, et non \verb|Sequence|.}
 
 Divers constructeurs sont implémentés (pour permettre diverses compatibilités
 avec les autres parties et si nous souhaitons améliorer le projet) mais un seul
@@ -167,25 +167,25 @@ nucléotide.
 
 Les autres méthodes utilisées sont:
 \begin{description}
-	\item[\textsc{getSize}]: Récupère la taille de la séquence. La taille est
-		contenue dans un attribut \verb|size| qui est mis à jour à chaque fois
+	\item[\emph{getSize}]: Récupère la taille de la séquence. La taille est
+		contenue dans un attribut \emph{size} qui est mis à jour à chaque fois
 		qu'on ajoute des éléments et cette mise à jour se fait en O(1). Cette
 		implémentation permet de garder une complexité en O(1) et de diminuer la
-		complexité de \verb|addEndGaps| dans \verb|ConsensusAbstract| par
+		complexité de \emph{addEndGaps} dans \verb|ConsensusAbstract| par
 		exemple.
-	\item[\textsc{complement}]: Construit, en $O(m)$ avec $m$ la taille de la
+	\item[\emph{complement}]: Construit, en $O(m)$ avec $m$ la taille de la
 		séquence \textit{initiale}, le complémentaire inversé de la séquence.
-		Cette méthode est donc plus rapide que la méthode \verb|complement| de
+		Cette méthode est donc plus rapide que la méthode \emph{complement} de
 		\verb|Sequence| qui nécessite de parcourir toute la séquence
 		\textit{alignée}.
-	\item[\textsc{addGapsAndReturnIndice}]: insère $n$ gaps à
+	\item[\emph{addGapsAndReturnIndice}]: insère $n$ gaps à
 			une position (absolue) donnée et retourne l'indice (dans la séquence
-			initiale) du nucléotide après lequel les gaps ont été insérés, le
+			initiale) du nucléotide après lequel les gaps ont été inséré, le
 			tout en $O(m)$ où $m$ est la taille de la séquence initiale. Le
 			retour de la fonction est utile pour la propagation entre deux
 			séquences provenant d'une même séquence initiale quand on doit
 			connaître entre quels nucléotides nous avons inséré les gaps.
-	\item[\textsc{addGapsAfterIndiceAndReturnPosition}]: insère $n$ gaps après
+	\item[\emph{addGapsAfterIndiceAndReturnPosition}]: insère $n$ gaps après
 		le nucléotide se trouvant à l'indice donné dans la séquence initiale.
 		Cette méthode est utilisée quand nous devons propager des gaps entre
 		deux séquences ne provenant pas de la même séquence initiale et que nous
@@ -205,40 +205,40 @@ Les méthodes s'occupant de la propagation se trouvent dans la classe
 
 Avant tout, en se rappelant que le chemin hamiltonien retourné par le greedy ne
 tient pas compte de l'offset, il faut le calculer. La méthode
-\verb|computeOffset| s'occupe, en $O(k)$ où $k$ est la longueur du chemin
+\emph{computeOffset} s'occupe, en $O(k)$ où $k$ est la longueur du chemin
 hamiltonien, de mettre à jour les offsets des séquences du chemin en alignant
-les séquences provenant de la même séquence initiale, c'est-à-dire, pour deux
+les séquences provenant de la même séquence initiale. C'est-à-dire, pour deux
 paires $P_{i}$ et $P_{i + 1}$, la deuxième séquence de $P_{i}$ va être alignée
-(ie le premier nucléotide va être placé au même décalage) avec la première
+(\emph{i.e.,} le premier nucléotide est placé au même décalage) avec la première
 séquence de $P_{i + 1}$.
 
 Viennent les propagations des gaps.
 Les méthodes s'en chargeant sont
-\verb|propageGapsDownFrom| et \verb|propageGapsUpFrom|. Les algorithmes étant
+\emph{propageGapsDownFrom} et \emph{propageGapsUpFrom}. Les algorithmes étant
 sensiblement les mêmes pour le bas et le haut, nous décrivons uniquement la
 propagation vers le bas.
 
 Dans \verb|computeAlignment|, nous parcourons chaque paire $P_{i}$ du chemin
-hamiltonien et faisons appel à \verb|propageGapsDownFrom| en envoyant comme
+hamiltonien et faisons appel à \emph{propageGapsDownFrom} en envoyant comme
 paramètre l'indice $i$. Comme expliqué précédemment, il faut regarder la
 séquence $t_{i}$ se trouvant en seconde position dans la paire $P_{i}$ et celle en
 première position de la paire $P_{i + 1}$, notée $s_{i + 1}$, et parcourir chaque nucléotide en
 propageant vers le bas la différence de gaps (nous rappelons que $t_{i}$ et
 $s_{i + 1}$ proviennent de la même séquence initiale et ont donc les mêmes
 nucléotides, la différence se situant dans le nombre de gaps entre
-chaque) si $t_{i}$ comporte plus de gaps que $s_{i + 1}$.
+chacun d'entres eux) si $t_{i}$ comporte plus de gaps que $s_{i + 1}$.
 
 S'il y a plus de gaps dans $t_{i}$ que dans $s_{i + 1}$ entre les
 nucléotides $n_{k}$ et $n_{k + 1}$ (ce que nous pouvons savoir en $O(1)$ grâce à
 la nouvelle abstraction des séquences car il suffit de comparer le tableau des
 gaps à la position $k$), nous propageons la différence vers le bas.
 Cette propagation se fait à travers la méthode
-\verb|propageGapsDownFromPosition| (resp. \verb|propageGapsUpFromPosition|) qui
+\emph{propageGapsDownFromPosition} (resp. \emph{propageGapsUpFromPosition}) qui
 prend deux paramètres: l'indice et le nombre de gaps à propager.
 
 Cette dernière méthode parcourt, à partir de la paire $P_{i} = (s_{i}, t_{i})$,
 toutes les paires $P_{j} = (s_{j}, t_{j})$, $i < j \leq n$ et ajoute le nombre
-de gaps demandé dans les segments $s_{j}$ et $t_{j}$. Supposons que nous devons
+de gaps demandés dans les segments $s_{j}$ et $t_{j}$. Supposons que nous devons
 propager des gaps venant d'entre les nucléotides $n_{k}$ et $n_{k + 1}$ de
 $t_{i}$, c'est-à-dire que nous devons insérer dans $s_{i + 1}$ après l'indice
 $k$.
@@ -248,44 +248,44 @@ L'insertion se fait de manière récursive sur $j$:
 	\item[$\bullet$] Pour $j = i + 1$, c'est-à-dire la paire juste après $P_{i}$, nous
 		devons insérer les gaps entre les deux nucléotides $n_{k}$ et $n_{k +
 		1}$ de $s_{i + 1}$. Cette insertion se fait grâce à la méthode
-		\verb|addGapsAfterIndiceAndReturnPosition| sur $s_{i + 1}$ (en $O(m)$,
+		\emph{addGapsAfterIndiceAndReturnPosition} sur $s_{i + 1}$ (en $O(m)$,
 		$m$ étant la taille de la séquence initiale d'où provient $t_{i}$) et on
 		récupère en plus la position absolue d'insertion (ce qui génère le $m$
 		dans la complexité de la méthode car nous devons calculer à la volée la
 		position absolue). Cette position absolue va permettre de savoir où il
 		faut propager les gaps dans la séquence $t_{i + 1}$. Grâce à cette
-		position $p$, on utilise la méthode \verb|addGapsAndReturnIndice| sur $t_{i
+		position $p$, on utilise la méthode \emph{addGapsAndReturnIndice} sur $t_{i
 		+ 1}$ pour insérer les gaps à la position $p$, et nous récupérons en
 		même temps l'indice du nucléotide de $t_{i + 1}$ après lequel les gaps
 		ont été ajoutés. Cette dernière méthode est également en $O(m)$,
 		toujours pour la même raison que précédemment.
 	\item[$\bullet$] Pour $j > i + 1$, nous répétons l'opération du cas de base mais cette
 		fois-ci, nous utilisons l'indice que la méthode
-		\verb|addGapsAndReturnIndice| nous a renvoyé à l'étape $j - 1$.
+		\emph{addGapsAndReturnIndice} nous a renvoyé à l'étape $j - 1$.
 \end{itemize}
 
-Pour un appel à \verb|propageGapsUpFromPosition|, nous obtenons donc une
+Pour un appel à \emph{propageGapsUpFromPosition}, nous obtenons donc une
 complexité en $O( (k - i) M_{i})$ où $M_{i}$ est la taille de la plus grande
 séquence du chemin, $k$ le nombre initial de séquence et $i$ la position de
 début de l'insertion.
 
 Cela entraine donc une complexité en $O( (k - i) M_{i}^{2})$ pour
-\verb|propageGapsDownFrom| car nous faisons appel, pour chaque nucléotide de
-$t_{i}$ (dans le pire des cas), à la méthode \-\verb|propageGapsUpFromPosition|.
-Par conséquence, comme \verb|propageGapsDown| parcourt toutes les paires en
-faisant appel à \verb|propageGapsDown|, nous obtenons une complexité finale de
+\emph{propageGapsDownFrom} car nous faisons appel, pour chaque nucléotide de
+$t_{i}$ (dans le pire des cas), à la méthode \-\emph{propageGapsUpFromPosition}.
+Par conséquence, comme \emph{propageGapsDown} parcourt toutes les paires en
+faisant appel à \emph{propageGapsDown}, nous obtenons une complexité finale de
 $O(k^{2} M_{i}^{2})$.
 
 Pour simplifier le calcul du consensus à la dernière étape, nous mettons à jour
 les gaps finaux des séquences pour que toutes les séquences aient la même
-longueur. Ce calcul est fait par \verb|addEndGaps| et se déroule en $O(k)$ où
+longueur. Ce calcul est fait par \emph{addEndGaps} et se déroule en $O(k)$ où
 $k$ est le nombre initial de séquences. Cette méthode se charge de calculer la
-taille de la plus longue séquence (en $O(k)$ car \verb|getSize| est en $O(1)$)
-et elle ajoute le nombre de gaps dans le tableau \verb|nb_gaps| pour chaque
+taille de la plus longue séquence (en $O(k)$ car \emph{getSize} est en $O(1)$)
+et elle ajoute le nombre de gaps dans le tableau \emph{$nb_gaps$} pour chaque
 séquence. Ce nombre de gaps à ajouter à la séquence courante est égale à la
 taille maximale moins la taille de la séquence courante.
 
-Pour l'ensemble de la méthode \verb|computeAlignment|, on obtient donc une
+Pour l'ensemble de la méthode \emph{computeAlignment}, on obtient donc une
 complexité de
 
 \begin{equation}
@@ -306,8 +306,8 @@ complexité de
 Grâce à l'alignement précédemment réalisé, les paires $P_{i}$ et $P_{i + 1}$ ont
 maintenant la même séquence respectivement en deuxième composante et en première
 composante et toutes les séquences sont maintenant bien alignées. Pour
-construire le contig final, nous allons parcourir chaque colonne de l'alignement
-et prendre le nucléotide qui apparait le plus souvent. En cas d'égalité, nous
+construire le contig final, nous parcourons chaque colonne de l'alignement
+et prenons le nucléotide qui apparait le plus souvent. En cas d'égalité, nous
 prenons par ordre alphabétique.
 
 Pour parcourir les objets de la classe \verb|SequenceAbstract|, nous avons

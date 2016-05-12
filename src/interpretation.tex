@@ -10,23 +10,22 @@ Le principe du dotmatcher est de comparer deux séquences $s$ et $t$ données en
 entrée: le dotmatcher parcourt les séquences en comparant chaque nucléotide
 entre eux.  Lorsqu'un correspondance est faite, un point est tracé sur un
 graphique. Une option, appelée \textit{thresold} peut être ajustée pour dissiper
-le bruit. Une valeur de 50 a été utilisée pour l'option \textit{threshold} comme
-demandé.
+le bruit. Une valeur de 50 a été utilisée pour l'option \textit{threshold}.
 
 Pour chaque nucléotide $s_{i}$ de la séquence $s$ et chaque nucléotide $t_{j}$
 de la séquence $t$, le dotmatcher va tracer un point s'il y a une correspondance
 entre les deux nucléotides.
 
-Pour chaque comparaisons de séquences, nous obtenons donc un rectangle de
+Pour chaque comparaison de séquences, nous obtenons donc un rectangle de
 points. Sur l'axe X, nous avons la longueur de la séquence que nous devons
 obtenir, et sur l'axe Y, nous avons la longueur de la séquence que nous avons
 obtenue.
 
-Nous souhaitons, à travers ces graphiques, étudier le comportement de notre
-séquence obtenue en regardant si chaque morceau de la séquence cible est bien
-atteinte, ceci se remarquant à travers les morceaux de droites car ceux-ci
+Nous souhaitons, à travers ces graphiques, étudier la qualité de notre
+résultat en regardant si chaque morceau de la séquence cible est bien
+atteinte. Ceci se remarque par la présence de segments de droites car ceux-ci
 reflètent une suite de nucléotides qui correspondent. Pour cela, il
-suffit de projeter chaque droite obtenue sur l'axe X et regarder si l'ensemble
+suffit de projeter chaque segment obtenu sur l'axe X et regarder si l'ensemble
 recouvre globalement la séquence de départ.
 
 \subsubsection*{Cible 1}
@@ -67,8 +66,8 @@ correspondances.
 Quant à la seconde cible, bien que nous obtenons des résultats assez éparpillés,
 le recouvrement est assez grand, aussi bien pour le normal que son
 complémentaire inversé.
-Le graphique du complémentaire inversé comprend tout de même plus de droites et
-celles-ci sont plus longues que celles du normal.
+Le graphique du complémentaire inversé comprend tout de même plus de segments et
+ceux-ci sont plus longs que ceux du normal.
 
 Nous obtenons également une plus grande séquence: la cible contient environ
 118000 nucléotides tandis que notre alignement en contient 190000.
@@ -93,7 +92,7 @@ Nous obtenons également une plus grande séquence: la cible contient environ
 
 \subsubsection*{Cible 4}
 
-Les résultats pour la cible 4 sont plutôt satisfaisantes comme pour les cibles 1
+Les résultats pour la cible 4 sont plutôt satisfaisants comme pour les cibles 1
 et 5. Nous obtenons un recouvrement quasi-global ainsi qu'une longue droite
 recouvrant environ 65\% de la séquence cible.
 
