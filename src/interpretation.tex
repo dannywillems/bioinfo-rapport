@@ -46,13 +46,13 @@ correspondances.
 \begin{figure}[!ht]
 	\begin{minipage}[r]{.46\linewidth}
 		\begin{center}
-		\includegraphics[scale= 0.4]{../res/cible1.png}
+		\includegraphics[scale= 0.7]{../res/cible1.png}
 		Résultat de la collection 1
 	\end{center}
 \end{minipage} \hfill
 \begin{minipage}[c]{.46 \linewidth}
 	\begin{center}
-			\includegraphics[scale= 0.4]{../res/cible1-ic.png}
+			\includegraphics[scale= 0.7]{../res/cible1-ic.png}
 			Résultat de la collection 1, complémenté et inversé
 		\end{center}
 	\end{minipage}
@@ -73,13 +73,13 @@ Nous obtenons également une plus grande séquence: la cible contient environ
 \begin{figure}[!ht]
 	\begin{minipage}[r]{.46\linewidth}
 		\begin{center}
-		\includegraphics[scale=0.25]{../res/cible2.png}
+		\includegraphics[scale=0.7]{../res/cible2.png}
 		Résultat de la collection 2
 	\end{center}
 \end{minipage} \hfill
 \begin{minipage}[c]{.46 \linewidth}
 	\begin{center}
-			\includegraphics[scale=0.25]{../res/cible2-ic.png}
+			\includegraphics[scale=0.7]{../res/cible2-ic.png}
 			Résultat de la collection 2, complémenté et inversé
 		\end{center}
 	\end{minipage}
@@ -102,13 +102,13 @@ Comme les 2 premières séquences, nous obtenons une séquence plus longue.
 \begin{figure}[!ht]
 	\begin{minipage}[r]{.46\linewidth}
 		\begin{center}
-		\includegraphics[scale= 0.4]{../res/cible4.png}
+		\includegraphics[scale= 0.7]{../res/cible4.png}
 		Résultat de la collection 4
 	\end{center}
 \end{minipage} \hfill
 \begin{minipage}[c]{.46 \linewidth}
 	\begin{center}
-			\includegraphics[scale= 0.4]{../res/cible4-ic.png}
+			\includegraphics[scale= 0.7]{../res/cible4-ic.png}
 			Résultat de la collection 4, complémenté et inversé
 		\end{center}
 	\end{minipage}
@@ -132,13 +132,13 @@ plus longue (environ 6000 nucléotides de plus).
 \begin{figure}[!ht]
 	\begin{minipage}[r]{.46\linewidth}
 		\begin{center}
-		\includegraphics[scale= 0.4]{../res/cible5.png}
+		\includegraphics[scale= 0.7]{../res/cible5.png}
 		Résultat de la collection 5
 	\end{center}
 \end{minipage} \hfill
 \begin{minipage}[c]{.46 \linewidth}
 	\begin{center}
-			\includegraphics[scale= 0.4]{../res/cible5-ic.png}
+			\includegraphics[scale= 0.7]{../res/cible5-ic.png}
 			Résultat de la collection 5, complémenté et inversé
 		\end{center}
 	\end{minipage}
@@ -161,17 +161,16 @@ provenir des erreurs contenus dans les collections.
 
 \subsection{Autres implémentations}
 
-Nous avons également tenté de changer l'implémentation du Greedy en modifiant
+Nous avons également expérimenté le changement de \og comportement \fg~de l'algorithme glouton en modifiant
 le comparateur d'arcs pour privilégier les alignements ayant une plus grande
 sous-séquence commune.
 
-Lorsque deux arcs ont un même score, nous avons tenté de
-privilégier les arcs qui ont une plus longue sous-séquence commune. Cette méthode
+Lorsque deux arcs ont un même score d'alignement, nous avons pour cela
+privilégié les arcs qui ont une plus longue sous-séquence commune. Cette méthode
 nous a donné des résultats équivalents si ce n'est que les droites apparaissent
 plus bas sur le graphe. Sur la figure \ref{fig:autre_impl_4} est représentée le
 dotmatcher obtenu sur la collection 4 avec ce nouveau comparateur d'arc. Les
-autres dotmatchers donnent la même chose si ce n'est que les droites
-apparaissent différement sur l'axe Y.
+autres dotmatchers donnent la même chose si ce n'est que la projection des segments sur l'axe Y n'est pas au même endroit.
 
 \begin{figure}[!ht]
 	\begin{minipage}[r]{.46\linewidth}
