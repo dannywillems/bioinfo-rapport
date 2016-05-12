@@ -10,14 +10,13 @@ Nous pensons que l'implémentation de la structure de donnée Union-Find est par
 
 L'implémentation de tests unitaires nous a permis de valider indépendamment chaque partie de notre implémentation.\\
 
-Les méthodes utilisées sont génériques, elles s'appliquent aussi pour n'importe quelles séquences linéaires avec recouvrement partiel (en particulier pour de l'ARN). Au point de vue du code, il n'est nécessaire que de modifier quelques valeurs dans la classe \verb|Nucleotide|.
+Les méthodes utilisées sont génériques, elles s'appliquent aussi pour n'importe quelles séquences linéaires avec recouvrement partiel (en particulier pour de l'ARN). Au point de vue du code, il n'est nécessaire que de modifier quelques valeurs dans la classe \verb|Nucleotide|.\\
 
 La seconde implémentation des séquences utilisées pour la propagation des gaps
 fournit des algorithmes quadratique en la taille de la plus grande séquence initiale et
 du nombre de séquences ainsi qu'un code clair et court. De plus, cette
 implémentation peut être généralisée à une liste quelconque d'acides aminés.
 
-\todo{autres points forts?}
 
 \subsection{Faiblesses}
 
@@ -38,5 +37,3 @@ complexité. Le temps constante aurait permis d'arriver à une complexité globa
 (pour l'alignement et le consensus) à du $O(M_{i} k ^{2})$ à la place de
 $O(M_{i}^{2} k^{2})$.\\
 
-\todo{à compléter}
-\todo{il reste des gap quand on fait le consensus à la fin ???}
