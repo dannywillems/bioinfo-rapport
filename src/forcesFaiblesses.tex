@@ -4,25 +4,31 @@
 
 \subsection{Forces}
 
-Le multi-threading de la génération des arcs nous a permis d'améliorer sensiblement la vitesse d'exécution de notre algorithme. A titre d'exemple, nous sommes passé de $\approx 50$ secondes à $\approx 25$ secondes pour le calcul des arcs de la première collection sur la machine d'Aline (MacBook Pro, 2,8 GHz Intel Core i5). Nous avons donc bon espoir quant au fait que sur des machines pouvant supporter plus de thread la diminution du temps d'exécution reste proportionnel à l'augmentation du nombre de threads. De ce fait, nous pouvons récupérer les résultats de la reconstruction de la séquence initiale pour les différentes collections en un temps raisonnable. La collection 2, la plus coûteuse en temps, prend environ une heure de calcul.\\
+Le multi-threading de la génération des arcs ainsi que lors du recalcul des alignements associés aux arcs choisis pour le chemin hamiltonien, nous a permis d'améliorer sensiblement la vitesse d'exécution de notre algorithme glouton. A titre d'exemple, nous sommes passés de $\approx 50$ secondes à $\approx 25$ secondes pour le calcul des arcs de la première collection sur la machine d'Aline (MacBook Pro, 2,8 GHz Intel Core i5). Nous avons donc bon espoir quant au fait que, sur des machines pouvant supporter plus de threads, la diminution du temps d'exécution reste proportionnelle à l'augmentation du nombre de threads. De ce fait, nous pouvons récupérer les résultats de la reconstruction de la séquence initiale pour les différentes collections en un temps raisonnable. La collection 2, la plus coûteuse en temps, prend environ une heure de calcul.\\
 
 Nous pensons que l'implémentation de la structure de donnée Union-Find est particulièrement adaptée dans le cadre de l'implémentation de l'algorithme Greedy. La complexité amortie pour les opérations sur cette structure étant en temps constant, il semble difficile de faire mieux.\\
+
+L'implémentation de tests unitaires nous a permis de valider indépendamment chaque partie de notre implémentation.\\
+
+Les méthodes utilisées sont génériques, elles s'appliquent aussi pour n'importe quelles séquences linéaires avec recouvrement partiel (en particulier pour de l'ARN). Au point de vue du code, il n'est nécessaire que de modifier quelques valeurs dans la classe \verb|Nucleotide|.
 
 La seconde implémentation des séquences utilisées pour la propagation des gaps
 fournit des algorithmes quadratique en la taille de la plus grande séquence initiale et
 du nombre de séquences ainsi qu'un code clair et court. De plus, cette
-implémentation peut être généralisée à une liste quelconque d'acide aminée.
+implémentation peut être généralisée à une liste quelconque d'acides aminés.
 
 \todo{autres points forts?}
 
 \subsection{Faiblesses}
 
-Bien que nous ayons réfléchi à la question, un traitement efficace des alignements de type \og inside\fg~n'a pu être mis en place. Toutefois, l'information nécessaire pour le traitement des arcs représentant des alignements de ce type a été mis en place et une amélioration future peut être effectuée sans devoir changer la structure des objets utilisés pour l'exécution de l'algorithme greedy.
+Bien que nous ayons réfléchi à la question, un traitement efficace des alignements de type \og inside\fg~n'a pu être mis en place. Toutefois, l'information nécessaire pour le traitement des arcs représentant des alignements de ce type a été mis en place et une amélioration future peut être effectuée sans devoir changer la structure des objets utilisés pour l'exécution de l'algorithme greedy.\\
+
+Chaque nucléotide est représenté par un byte (8 bits). Or, nous travaillons sur un alphabet de 5 lettres ( 3 bits nécessaires). Il y aurait donc moyen de faire mieux, mais Java n'est pas très adapté, nous avons donc du trouver un compromis entre le temps de calcul et l'allocation mémoire nécessaire.\\
 
 De plus, le passage des objets de classe \verb|Sequence| aux objets de la classe
 \verb|SequenceAbstract| prend un temps de calcul $O(M_{i} * k)$, où $M_{i}$ est
 la taille de la plus grande séquence initiale et $k$ le nombre initial de
-séquences.
+séquences.\\
 
 Bien que l'insertion de gaps lors de la propagation soit
 linéaire en la taille de la séquence initiale, ceci étant du à la nécessité de
@@ -30,7 +36,7 @@ récupérer la position absolue, il aurait été intéressant d'avoir une comple
 en $O(1)$. Cependant, nous n'avons pu trouver de solutions pour amortir cette
 complexité. Le temps constante aurait permis d'arriver à une complexité globale
 (pour l'alignement et le consensus) à du $O(M_{i} k ^{2})$ à la place de
-$O(M_{i}^{2} k^{2})$.
+$O(M_{i}^{2} k^{2})$.\\
 
 \todo{à compléter}
 \todo{il reste des gap quand on fait le consensus à la fin ???}

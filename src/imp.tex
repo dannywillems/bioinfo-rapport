@@ -184,7 +184,7 @@ Dans l'implémentation que nous avons utilisée, chaque classe d'équivalence es
 
 L'opération \emph{Find} retourne la racine de l'arbre et donc détermine quel est le représentant de la classe d'équivalence. Pour l'opération \textsc{Union}, on rattache la racine d'une des deux classes à celle de l'autre classe. Toutefois, une telle démarche pourrait amener à des arbres fortement déséquilibrés . Afin d'éviter cela, une heuristique sur la hauteur de l'arbre est utilisée. On retient le \emph{rang} de l'arbre et, à chaque fois que l'on veut faire l'union de deux arbres, on considère leur rang. On attache l'arbre de rang inférieur à la racine de l'arbre de rang supérieur. Les arbres qui ne contiennent qu'un seul élément sont de rang 0 et dès que l'on effectue l'union de deux arbres de même rang, le résultat de cette union a un rang d'une unité plus grand.
 
-La complexité amortie pour les opérations sur cette structure  est en $\mathcal{O}(\alpha (n))$ où $\alpha(n)$ est l'inverse de la fonction $f(x) = A(x,x)$ où $A$ est la fonction de Ackermann (\url{https://fr.wikipedia.org/wiki/Fonction_d%27Ackermann}) dont la croissance est très rapide. En pratique, $\alpha(n)$ vaut moins de 5 pour toute valeur de $n$. Dès lors, la complexité amortie des opérations sur Union-Find peut être considérée comme pratiquement constante.
+La complexité amortie pour les opérations sur cette structure  est en $\mathcal{O}(\alpha (n))$ où $\alpha(n)$ est l'inverse de la fonction $f(x) = A(x,x)$ où $A$ est la fonction de Ackermann dont la croissance est très rapide. En pratique, $\alpha(n)$ vaut moins de 5 pour toute valeur de $n$. Dès lors, la complexité amortie des opérations sur Union-Find peut être considérée comme pratiquement constante.
 
 
 \input{alignementConsensus}
