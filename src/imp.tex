@@ -41,9 +41,9 @@
 \subsection{Récupération et stockage des données}
 \label{subsection:recStock}
 
-Cette étape est effectuée au travers des classes \verb|FastaReader| et \verb|Alignement|. De plus, la classe \verb|FastaWriter| est utilisée afin de récupérer le résultat du procédé visant à trouver le meilleur contig.\\
+Des sous-séquences brutes d'ADN sont stockées dans des fichiers au format FASTA, il nous est donc nécessaire de les récupérer. Cette étape est effectuée au travers des classes \verb|FastaReader| et \verb|Sequence|. De plus, la classe \verb|FastaWriter| est utilisée afin de récupérer le résultat du procédé visant à trouver le meilleur contig.\\
 
-La classe \verb|Alignment| permet de stocker sous forme d'un tableau de Bytes un fragment d'ADN. Nous prenons la convention suivante quant à la représentation des nucléotides et d'un gap:
+La classe \verb|Segment| permet de stocker sous forme d'un tableau de Bytes un fragment d'ADN. Nous prenons la convention suivante quant à la représentation des nucléotides et d'un gap:
 	\begin{center}
 		\begin{tabular}{|l|c|}
 			\hline
@@ -64,7 +64,7 @@ La classe \verb|Alignment| permet de stocker sous forme d'un tableau de Bytes un
 		\end{tabular}
 	\end{center}
 
-	Le fait de stocker les nucléotides sous forme de Bytes permet de réduire l'espace mémoire nécessaire.
+	Le fait de stocker les nucléotides sous forme de Bytes permet de réduire l'espace mémoire nécessaire pour retenir en mémoire une séquence d'ADN. En effet, si nous avions stocké naïvement les séquences sous forme d'un String chaque caractère de la chaîne prendrait 4 octets 
 
 	  Elle contient également des méthodes intéressantes telles que \textsc{complement} qui permet de complémenter et inverser une séquence d'ADN ainsi que d'autres méthodes comme \textsc{backTrack} et \textsc{semiGlobalAlignment} qui sont utiles pour l'étape décrite dans la section~\ref{subsection:semiGlobal} ou encore \textsc{arcGenerator} qui est expliquée dans la section~\ref{subsection:greedy}.\\
 
