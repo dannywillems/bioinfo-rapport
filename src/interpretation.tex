@@ -167,12 +167,30 @@ Nous avons également tenté de changer l'implémentation du Greedy en modifiant
 le comparateur d'arcs pour privilégier les alignements ayant une plus grande
 sous-séquence commune.
 
-Ces méthodes ont donné des résultats un peu différents mais pas aussi bons que
-ceux obtenus initialement.
+Lorsque deux arcs ont un même score, nous avons tenté de
+privilégier les arcs qui ont une plus longue sous-séquence commune. Cette méthode
+nous a donné des résultats équivalents si ce n'est que les droites apparaissent
+plus bas sur le graphe. Sur la figure \ref{fig:autre_impl_4} est représentée le
+dotmatcher obtenu sur la collection 4 avec ce nouveau comparateur d'arc. Les
+autres dotmatchers donnent la même chose si ce n'est que les droites
+apparaissent différement sur l'axe Y.
 
-Par exemple, lorsque deux arcs ont un même score, nous avons tenté de
-privilégier les arcs qui ont une plus longue sous-séquence commune Cette méthode
-ne nous a pas donné de mauvais résultats mais ils étaient moins bons.
+\begin{figure}[!ht]
+	\begin{minipage}[r]{.46\linewidth}
+		\begin{center}
+			\includegraphics[scale= 0.4]{../res/cible4-other.png}
+			Autre implémentation: collection 4
+		\end{center}
+	\end{minipage} \hfill
+	\begin{minipage}[c]{.46 \linewidth}
+		\begin{center}
+		\includegraphics[scale= 0.4]{../res/cible4-ic-other.png}
+		Autre implémentation: collection 4, complémenté et inversé
+	\end{center}
+	\end{minipage}
+	\label{fig:autre_impl_4}
+	\caption{Autre implémentation: collection 4}
+\end{figure}
 
 Dans le code soumis, nous avons prévilégié, lors de l'alignement semi-global,
 l'alignement avec le moins de gaps finaux et initiaux, c'est-à-dire en
