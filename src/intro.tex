@@ -2,10 +2,9 @@
 
 \section{Introduction}
 
-En biologie, il arrive qu'à partir d'un ensemble de fragments d'ADN on désire retrouver la séquence initiale correspondant à ces fragments.
-C'est la tâche qui nous a été demandée. 
+En biologie, il est très utile d'aligner des séquences d'ADN. En effet, lors du séquençage de l'ADN, un ensemble de fragments d'ADN  est récupéré et on désire retrouver la séquence initiale correspondant à ces fragments. C'est la tâche qui nous a été demandée. 
 
-Le principe ne se résume pas simplement à prendre chaque fragment et à les mettre bout à bout afin de construire une super-chaîne. En effet,
-comme les fragments ne sont pas coupés \og bout à bout\fg~ils se recouvrent partiellement. De plus, il se peut que lors de la fragmentation de l'ADN des nucléotides se soient rajoutés ou au contraire aient disparu (indel). De plus, si les deux brins d'ADN ont été fragmentés en même temps, il faut tenir compte du fait qu'un des brins est dans le sens \textbf{5'-3'} tandis que l'autre est dans le sens \textbf{3'-5'} et correspond au complémentaire du premier.
+Ce processus est un un processus compliqué, il ne se résume pas simplement à prendre chaque fragment et à les mettre bout à bout afin de construire une super-chaîne. En effet,
+lors du séquençage il est impossible d'extraire des fragments en des positions bien précise. De ce fait, ils se recouvrent partiellement. De plus, il se peut que lors de la fragmentation de l'ADN des nucléotides se soient rajoutés ou au contraire aient disparu (indel) ou encore que des substitutions aient eu lieu. Enfin, une molécule d'ADN est composée de deux brins différents, un premier brin qui a une orientation \textbf{5'-3'} et un second - qui correspond à son complémentaire- qui a une orientation \textbf{3'-5'}. Le processus de séquençage ne permet pas non plus de connaître quelle est l'orientation du fragment.
 
 Notre rapport est rédigé de la manière suivante: dans la section suivante nous expliquons comment nous avons implémenté une solution à ce problème. Nous commençons par en expliquer brièvement chaque étape et ensuite nous expliquons plus précisément chacune d'elles. Ensuite, nous exposons et interprétons les résultats obtenus. Enfin, nous expliquons la répartitions des taches et nous terminons en  explicitant les forces et faiblesses que, d'après nous, notre implémentation comporte.
