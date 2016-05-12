@@ -8,7 +8,7 @@ Pour étudier les résultats que notre programme nous retourne, nous avons utili
 un \textit{dotmatcher}.
 Le principe du dotmatcher est de comparer deux séquences $s$ et $t$ données en
 entrée: le dotmatcher parcourt les séquences en comparant chaque nucléotide
-entre eux.  Lorsqu'un correspondance est faite, un point est tracé sur un
+entre eux.  Lorsqu'une correspondance est faite, un point est tracé sur un
 graphique. Une option, appelée \textit{thresold} peut être ajustée pour dissiper
 le bruit. Une valeur de 50 a été utilisée pour l'option \textit{threshold}.
 
@@ -30,7 +30,7 @@ recouvre globalement la séquence de départ.
 
 \subsubsection*{Cible 1}
 
-Au niveau de la première cible, nous remarquons d'abord que la séquence que nous
+Au niveau de la première cible (voir figure~\ref{cible1}), nous remarquons d'abord que la séquence que nous
 avons obtenue est plus longue que la séquence cible fournie ($\simeq$ 14 000 vs
 $\simeq$ 9000).
 
@@ -38,7 +38,7 @@ Les résultats sont meilleurs pour le normal que pour son complémentaire
 inversé. Le recouvrement du premier est presque global, les intervalles non
 couverts se trouvant aux alentours de 1000 et 7000. Quant au complémentaire
 inversé, il y a un intervalle non couvert entre 2000 et 4000 ainsi que des
-petits intervalles entre chaque segments.
+petits intervalles entre chaque segment.
 
 Nous remarquons, à travers les droites, que nous avons de longues successions de
 correspondances.
@@ -47,24 +47,25 @@ correspondances.
 	\begin{minipage}[r]{.46\linewidth}
 		\begin{center}
 		\includegraphics[scale= 0.7]{../res/cible1.png}
-		Résultat de la collection 1
-	\end{center}
+		Sequence obtenue
+			\end{center}
 \end{minipage} \hfill
 \begin{minipage}[c]{.46 \linewidth}
 	\begin{center}
 			\includegraphics[scale= 0.7]{../res/cible1-ic.png}
-			Résultat de la collection 1, complémenté et inversé
+			 Séquence complémentée et inversée
 		\end{center}
 	\end{minipage}
 	\caption{Résultat de la collection 1}
+	\label{cible1}
 \end{figure}
 
 \FloatBarrier
 
 \subsubsection*{Cible 2}
 
-Quant à la seconde cible, nous pouvons remarquer qu'il y a peu de
-correspondance. Cependant, si nous zoomons sur certaines zones, nous pouvons
+Quant à la seconde cible (voir figure~\ref{cible2}), nous pouvons remarquer qu'il y a peu de
+correspondances. Cependant, si nous zoomons sur certaines zones, nous pouvons
 voir apparaitre des petits segments de droites.
 
 Nous obtenons également une plus grande séquence: la cible contient environ
@@ -74,27 +75,27 @@ Nous obtenons également une plus grande séquence: la cible contient environ
 	\begin{minipage}[r]{.46\linewidth}
 		\begin{center}
 		\includegraphics[scale=0.7]{../res/cible2.png}
-		Résultat de la collection 2
-	\end{center}
+Séquence obtenue	\end{center}
 \end{minipage} \hfill
 \begin{minipage}[c]{.46 \linewidth}
 	\begin{center}
 			\includegraphics[scale=0.7]{../res/cible2-ic.png}
-			Résultat de la collection 2, complémenté et inversé
+			 Séquence complémentée et inversée
 		\end{center}
 	\end{minipage}
 	\caption{Résultat de la collection 2}
+	\label{cible2}
 \end{figure}
 
 \FloatBarrier
 
 \subsubsection*{Cible 4}
 
-Les résultats pour la cible 4 sont plutôt satisfaisants comme pour les cibles 1
+Les résultats pour la cible 4 (voir figure~\ref{cible4}) sont plutôt satisfaisants comme pour les cibles 1
 et 5. Nous obtenons un recouvrement quasi-global ainsi qu'une longue droite
 recouvrant environ 65\% de la séquence cible.
 
-Pour son complémentaire inversée, le recouvrement est plus éparpillé mais reste
+Pour son complémentaire inversé, le recouvrement est plus éparpillé mais reste
 tout de même assez global.
 
 Comme les 2 premières séquences, nous obtenons une séquence plus longue.
@@ -103,28 +104,29 @@ Comme les 2 premières séquences, nous obtenons une séquence plus longue.
 	\begin{minipage}[r]{.46\linewidth}
 		\begin{center}
 		\includegraphics[scale= 0.7]{../res/cible4.png}
-		Résultat de la collection 4
-	\end{center}
+Séquence obtenue	\end{center}
 \end{minipage} \hfill
 \begin{minipage}[c]{.46 \linewidth}
 	\begin{center}
 			\includegraphics[scale= 0.7]{../res/cible4-ic.png}
-			Résultat de la collection 4, complémenté et inversé
+			 Séquence complémentée et inversée
 		\end{center}
 	\end{minipage}
 	\caption{Résultat de la collection 4}
+	\label{cible4}
 \end{figure}
 
 \FloatBarrier
 
 \subsubsection*{Cible 5}
 
-Pour la dernière cible, la 5, nous obtenons aussi plusieurs segments de droites,
+
+Pour la dernière cible (voir figure~\ref{cible5}), nous obtenons aussi plusieurs segments de droites,
 plus ou moins grands, recouvrant la majorité de la séquence cible (un peu plus
 de 90\%). Les endroits où les deux séquences ne correspondent pas se situent aux
 alentours de 3000 et 7500. Le complémentaire inversé remplit également une bonne
 partie de la séquence cible mais il y a plus d'intervalles où les séquences ne
-se correspondent pas.
+correspondent pas.
 
 Comme pour les séquences précédentes, notre algorithme nous renvoie une séquence
 plus longue (environ 6000 nucléotides de plus).
@@ -133,31 +135,30 @@ plus longue (environ 6000 nucléotides de plus).
 	\begin{minipage}[r]{.46\linewidth}
 		\begin{center}
 		\includegraphics[scale= 0.7]{../res/cible5.png}
-		Résultat de la collection 5
-	\end{center}
+Séquence obtenue	\end{center}
 \end{minipage} \hfill
 \begin{minipage}[c]{.46 \linewidth}
 	\begin{center}
 			\includegraphics[scale= 0.7]{../res/cible5-ic.png}
-			Résultat de la collection 5, complémenté et inversé
+			 Séquence complémentée et inversée
 		\end{center}
 	\end{minipage}
 	\caption{Résultat de la collection 5}
+	\label{cible5}
 \end{figure}
 
 \FloatBarrier
 
 
-\subsubsection*{Interprétation Générale}
+\subsubsection*{Interprétation générale}
 
 De manière générale, nous recouvrons globalement chaque séquence, (jusqu'à 90\%
-pour la cible 4), soit de manière continue (longue droite, comme les cible 1 et
+pour la cible 4), soit de manière continue (longue droite, comme les cibles 1 et
 4), soit un peu éparpillé (segments de droite recouvrant de 10 à 40\%, cible 5),
-soit très peu de droite et très éparpillé (très petits segments de droites lors
+soit très peu de segments et très éparpillé (très petits segments de droites lors
 du zoom, cible 2).
 
-Chaque séquence obtenue est plus grande que la séquence cible: cela pourrait
-provenir des erreurs contenus dans les collections.
+Chaque séquence obtenue est plus grande que la séquence cible.
 
 \subsection{Autres implémentations}
 

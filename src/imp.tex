@@ -6,9 +6,9 @@
 	L'idée générale de l'alignement de séquences est de permettre, à partir d'un ensemble de séquences, de créer à l'aide de chevauchements approximatifs un \emph{contig}. Pour ce faire, notre démarche se découpe en plusieurs parties:
 
 	\begin{description}
-		\item[Récupération et stockage des données] Afin de pouvoir former le contig souhaité, il est nécessaire de récupérer les séquences et de les stocker de manière efficace. Cette étape est expliquée dans la section~\ref{subsection:recStock}.
+		\item[1.Récupération et stockage des données:] Afin de pouvoir former le contig souhaité, il est nécessaire de récupérer les séquences et de les stocker de manière efficace. Cette étape est expliquée dans la section~\ref{subsection:recStock}.
 
-		\item[1. Alignement semi-global] Ensuite, pour chaque paire de séquences,
+		\item[2. Alignement semi-global:] Ensuite, pour chaque paire de séquences,
 			nous effectuons un \emph{alignement semi-global} en nous inspirant
 			de l'algorithme vu en cours. Cette méthode nous donne ainsi
 			les chevauchements approximatifs des deux séquences, ce qui permet de
@@ -17,7 +17,7 @@
 			grande chaine qui est suffixe de $s$ et préfixe de $t$ (à erreurs de séquençage près). Cette étape
 			est expliquée dans la section~\ref{subsection:semiGlobal}.
 
-		\item[2. Recherche de chemin hamiltonien] Une fois les alignements approximatifs
+		\item[3. Recherche de chemin hamiltonien:] Une fois les alignements approximatifs
 			calculés, il est encore nécessaire de trouver dans quel ordre
 			ceux-ci doivent être assemblés afin de former le meilleur contig.
 			Pour ce faire, nous utilisons un \emph{algorithme glouton} qui, à
@@ -25,14 +25,14 @@
 			reconstituer le contig. Cette étape est expliquée dans la
 			section~\ref{subsection:greedy}.
 
-		\item[3. Alignement]
+		\item[4. Alignement:]
 			L'algorithme glouton nous donnant, dans l'ordre, les séquences à
 			aligner, il est nécessaire de reconstruire cet alignement en
 			ajoutant des gaps pour que chaque séquence ait la même longueur et
 			qu'on puisse calculer le consensus. Cette étape est expliquée dans
 			la section ~\ref{subsection:alignment}.
 
-		\item[4. Consensus]
+		\item[5. Consensus:]
 			Après que l'alignement ait été réalisé, il nous faut calculer le
 			consensus en fonction de ce dernier. Cette étape est expliquée dans
 			la section ~\ref{subsection:consensus}.
@@ -65,13 +65,13 @@ La classe \verb|Segment| permet de stocker sous forme d'un tableau d'octets un f
 		\end{tabular}
 	\end{center}
 
-	Le fait de stocker les nucléotides sous forme de Bytes permet de réduire l'espace mémoire nécessaire pour retenir en mémoire une séquence d'ADN. En effet, si nous avions stocké naïvement les séquences sous forme d'un String chaque caractère de la chaîne prendrait 4 octets contre 1 octet les caractères à l'aide d'un byte.
+	Le fait de stocker les nucléotides sous forme de Bytes permet de réduire l'espace mémoire nécessaire pour retenir en mémoire une séquence d'ADN. En effet, si nous avions stocké naïvement les séquences sous forme d'un String chaque caractère de la chaîne prendrait 4 octets contre 1 octet par caractère si on utilise un byte.
 
 \subsection{Alignement semi-global}
 \label{subsection:semiGlobal}
 
 Une des premières étapes de notre démarche est d'effectuer un alignement semi-global
-de deux séquences. Le calcul d'une matrice de similarités entre les deux séquences à aligner doit être effectué. A partir de certaines valeurs associées à un gap ( ex: \begin{tabular}{c} A \\ - \end{tabular} ou \begin{tabular}{c} - \\ A \end{tabular} ), à un match (\begin{tabular}{c} A \\ A \end{tabular}) et à un missmatch (\begin{tabular}{c} A \\ C \end{tabular}) celle-ci permet de calculer les différents scores des alignements possibles entre les deux séquences. Dans le cadre d'un alignement semi-global, le score d'alignement correspond à la somme des scores 
+de deux séquences. Le calcul d'une matrice de similarités entre les deux séquences à aligner doit être effectué. A partir de certaines valeurs associées à un gap ( ex: \begin{tabular}{c} A \\ - \end{tabular} ou \begin{tabular}{c} - \\ A \end{tabular} ), à un match (\begin{tabular}{c} A \\ A \end{tabular}) et à un missmatch (\begin{tabular}{c} A \\ C \end{tabular}) nous pouvons calculer les différents scores des alignements possibles entre les deux séquences. Dans le cadre d'un alignement semi-global, le score d'alignement correspond à la somme des scores pour chaque paire de nucléotides de l'alignement.
 Dans le cadre de ce projet, nous utilisons les valeurs suivantes:
 
 \begin{center}
@@ -93,8 +93,8 @@ Dans le cadre de ce projet, nous utilisons les valeurs suivantes:
 
 
 
- L'alignement semi-global est implémenté dans la classe \verb|Sequence| via la fonction \emph{semiGlobalAlignement} qui utilise la fonction \emph{computeSimMat} et \emph{backTrack}. Cette méthode prend deux séquences $f$ et $g$, les coûts de match, missmatch et gap et calcule l'alignement dont le score d'alignement est le plus élevé et  tel que $f$ précède $g$ - nous appelons cet alignement un alignement de type ($f,g$) - et celui tel que $g$ précède $f$ - nous appelons cet alignement un alignement de type ($g,f$)- et renvoie le résultat sous la forme d'une liste de \verb|SequenceAlignement|. Ce comportement est un différent de celui du cours, car dans ce dernier on se contentait de garder le meilleur des deux alignements du point de vue du score d'alignement. Ici nous sommes intéressés à la fois  au meilleur alignement suffixe-prefixe de $f$ avec $g$ mais également le cas inverse ($g$ avec $f$). Ces deux situations sont illustrés à la figure~\ref{fig:alignementType}.
-On remarque que lorsque l'on calcule la matrice de similarité, si le fragment $f$ est placé sur l'axe vertical et si le fragment $g$ est placé sur l'axe horizontal, on trouve le score d'alignement de type $(f,g)$ en prenant le maximum sur la dernière ligne de la matrice. En effet, cela signifie que l'on a parcouru tous les éléments de la séquence $f$ avant de finir le parcours des éléments de la séquence $g$. De la même manière on trouve les alignements de type $(g,f)$ en prenant le maximum de la dernière colonne de la matrice.\\
+ L'alignement semi-global est implémenté dans la classe \verb|Sequence| via la fonction \emph{semiGlobalAlignement} qui utilise la fonction \emph{computeSimMat} et \emph{backTrack}. Cette méthode prend deux séquences $f$ et $g$, les coûts de match, missmatch et gap et calcule l'alignement dont le score d'alignement est le plus élevé et  tel que $f$ précède $g$ - nous appelons cet alignement un alignement de type ($f,g$) - et celui tel que $g$ précède $f$ - nous appelons cet alignement un alignement de type ($g,f$)- et renvoie le résultat sous la forme d'une liste de \verb|SequenceAlignement|. Ce comportement est différent de celui du cours, car dans ce dernier, on se contentait de garder le meilleur des deux alignements du point de vue du score d'alignement. Ici nous sommes intéressés à la fois  au meilleur alignement suffixe-prefixe de $f$ avec $g$ mais également le cas inverse ($g$ avec $f$). Ces deux situations sont illustrées à la figure~\ref{fig:alignementType}.
+On remarque que lorsque l'on calcule la matrice de similarité, si le fragment $f$ est placé sur l'axe vertical et si le fragment $g$ est placé sur l'axe horizontal, on trouve le score d'alignement de type $(f,g)$ en prenant le maximum sur la dernière ligne de la matrice. En effet, cela signifie que l'on a parcouru tous les éléments de la séquence $f$ avant de finir le parcours des éléments de la séquence $g$. De la même manière, on trouve les alignements de type $(g,f)$ en prenant le maximum de la dernière colonne de la matrice.\\
 
 \begin{figure}
 	\begin{minipage}[r]{.46\linewidth}
@@ -115,10 +115,10 @@ On remarque que lorsque l'on calcule la matrice de similarité, si le fragment $
 
 
 Un objet de la classe \verb|SequenceAlignement| est défini de la manière
-suivante: le fragment $f$ aligné (stocké dans l'argument \emph{s1}) avec le segment $g$ (stocké dans l'argument \emph{s2}) en supposant que le
-segment $f$ est le segment le plus à \og gauche \fg.
+suivante: le fragment $f$ aligné (stocké dans l'argument \emph{s1}) avec le fragment $g$ (stocké dans l'argument \emph{s2}) en supposant que le
+fragment $f$ est celui le plus à \og gauche \fg.
 
-De plus,  dans la classe \verb|Sequence| nous retrouvons la méthode \emph{arcGenerator} qui à partir de deux fragments $f$ et $g$ calcule les alignements suivants:\\
+De plus,  dans la classe \verb|Sequence|, nous retrouvons la méthode \emph{arcGenerator} qui à partir de deux fragments $f$ et $g$ calcule les alignements suivants:\\
 \begin{itemize}
 	\item[$\bullet$] Les alignements $(f,g)$ et $(g,f)$;
 	\item[$\bullet$] Les alignements $(\overline{f},g)$ et $(g, \overline{f})$;
@@ -126,13 +126,13 @@ De plus,  dans la classe \verb|Sequence| nous retrouvons la méthode \emph{arcGe
 	\item[$\bullet$] Les alignements  $(\overline{f}, \overline{g})$ et $(\overline{g}, \overline{f})$.
 \end{itemize}
 Où $\overline{f}$ est le fragment complémentaire inversé de $f$.\\
-Au vu des explications ci-dessus, il est important de remarquer que pour trouver les 8 alignements il n'est nécessaire de calculer uniquement 4 matrices de similarités (une pour chaque paire de l'énumération ci-dessus).\\
+Au vu des explications ci-dessus, il est important de remarquer que pour trouver les 8 alignements, il n'est nécessaire de calculer uniquement 4 matrices de similarités (une pour chaque paire de l'énumération ci-dessus).\\
 
 A partir de ces alignements, nous représentons les relations entre toutes les paires d'alignement sous la forme d'arcs. Un arc possède les attributs suivants:\\
 
 \begin{itemize}
-	\item[$\bullet$] Les fragments $f$ et $g$ initiaux qui sont utilisés lors de l'alignement. Ceux-ci sont stockés dans les attributs \emph{start} et \emph{end} qui représentent respectivement l'origine et de l'extrémité de l'arc.
-	\item[$\bullet$] Des booléens relatifs à $f$ et $g$ - respectivement \emph{startComp} et \emph{endComp} qui permettent de savoir si on considère le complémentaire inversé lors de l'alignement.
+	\item[$\bullet$] Les fragments $f$ et $g$ initiaux qui sont utilisés lors de l'alignement. Ceux-ci sont stockés dans les attributs \emph{start} et \emph{end} qui représentent respectivement l'origine et l'extrémité de l'arc.
+	\item[$\bullet$] Des booléens relatifs à $f$ et $g$ - respectivement \emph{startComp} et \emph{endComp}- qui permettent de savoir si on considère le complémentaire inversé lors de l'alignement.
 	\item[$\bullet$] Le score correspondant à l'alignement.
 	\item[$\bullet$] Un booléen \emph{inside} qui permet de déterminer si, lors de l'alignement, un des deux fragments est inclus à l'autre.
 	
@@ -144,27 +144,27 @@ Nous pouvons remarquer que nous ne stockons pas, l'alignement résultant de l'al
 \subsection{Recherche d'un chemin hamiltonien}
 \label{subsection:greedy}
 
-Une fois les arcs construits ( voir section~\ref{subsection:semiGlobal}), nous désirons trouver le chemin hamiltonien dans le graphe formés par ces arcs. Pour ce faire, nous utilisons un algorithme glouton.
+Une fois les arcs construits ( voir section~\ref{subsection:semiGlobal}), nous désirons trouver le chemin hamiltonien dans le graphe formé par ces arcs. Pour ce faire, nous utilisons un algorithme glouton.
 
 \subsubsection{Algorithme glouton}
 
-Le déroulement général de l'algorithme glouton est le suivant: à chaque étape d'exécution de l'algorithme, celui-ci sélectionne. Plusieurs critères doivent alors être vérifiés pour savoir si l'arc doit être retenu. \\
+Le déroulement général de l'algorithme glouton est le suivant: à chaque étape d'exécution de l'algorithme, celui-ci sélectionne l'arc de poids maximal parmi ceux non encore rejetés ou utilisés. Plusieurs critères doivent alors être vérifiés pour savoir si l'arc doit être retenu. \\
 
 Si l'arc est l'arc $(f,g)$ où $f$ est l'origine de l'arc et $g$ son extrémité, il faut vérifier:
 \begin{enumerate}
  \item qu'on ne soit pas déjà rentré dans le \og n\oe{}ud \fg~$g$ ni qu'on ne soit déjà sorti du \og n\oe{}ud \fg~$f$;
- \item qu'en reliant $f$ et $g$, un cycle n'est pas crée. Pour ce faire, chaque fragment appartient à un certain ensemble de fragment et il est nécessaire de vérifier que $f$ et $g$ ne font pas partie du même ensemble. Nous avons décidé, d'utiliser la structure de donnée \emph{Union-Find} (classe \verb|Union-Find|) afin de représenter ces ensembles. Nous expliquons cette structure de donnée de manière générale dans la section~\ref{section:unionFind}.
+ \item qu'en reliant $f$ et $g$, un cycle n'est pas crée. Pour ce faire, chaque fragment appartient à un certain ensemble de fragments et il est nécessaire de vérifier que $f$ et $g$ ne font pas partie du même ensemble. Nous avons décidé, d'utiliser la structure d'\emph{Union-Find} (classe \verb|Union-Find|) afin de représenter ces ensembles. Nous expliquons cette structure de manière générale dans la section~\ref{section:unionFind}.
  \item que lorsqu'un fragment $f$ est choisi pour la formation du chemin hamiltonien, il ne soit plus possible d'utiliser son complémentaire inversé $\overline{f}$. \\
 \end{enumerate}
 
 La mise en \oe{}uvre de l'algorithme se trouve dans la classe \verb|Greedy|. Nous détaillons ci-dessous le rôle des différentes méthodes qui s'y trouvent.
 
 \begin{description}
-	\item[\emph{generateAllPairs}] Cette méthode génère toutes les paires possibles à partir d'un ensemble de séquences.
-	\item[\emph{isAcceptable}] Pour un arc donné, cette méthode détermine si cet arc respecte les conditions d'acceptabilité expliquées ci-dessus. 
-	\item[\emph{filterArcs}] C'est au sein de cette méthode que l'algorithme glouton est implémenté. A partir d'une liste d'arcs, on récupère les séquences ayant généré ces arcs afin de pouvoir générer la structure d'\verb|Union-find|. Deux ensembles \emph{entered} et \emph{exited} permettent de tenir à jour les \og n\oe{}uds \fg~dans lesquels on est rentré ou sorti. Une autre structure \emph{comp} permet de déterminer si on a déjà utilisé un fragment et si oui, s'il est utilisé sous sa forme complémentée inversée ou pas. L'algorithme choisit à chaque fois l'arc de poids le plus élevé et teste s'il est acceptable. Si oui,cet arc est ajouté pour la construction du chemin hamiltonien et on met à jour toutes les structures décrites précédemment. Nous avons ainsi un ensemble d'arcs formant un chemin hamiltonien, mais nous ne savons pas encore dans quel ordre les agencer afin de construire ce chemin.
-	\item[\emph{hamiltonianPath}] A partir de l'ensemble des arcs acceptés par la méthode \emph{filterArcs} reconstruit le chemin hamiltonien est reconstitué.
-	\item[\emph{greedy}] Cette méthode utilise toutes les méthodes précédentes. Elle commence par générer toutes les paires de séquences possibles. A partir de ces paires, elle construit les arcs. C'est à ce moment que le travail est le plus couteux (car il demande de calculer les matrices de similarité). C'est pourquoi cette étape est parallélisée . Nous avons ensuite la possibilité de retenir certains arcs selon certains critères. Nous avons essayé en rejetant les arcs qui correspondaient un alignement de type \og inside \fg. Les tests effectués après cette modification semblant donner des résultats moins bons que ceux où les alignements de type \og inside \fg~n'étaient pas écartés, cette alternative n'a pas été retenue. Le chemin hamiltonien d'arcs est ensuite consrtuit. Toutefois, les alignements n'étant pas stockés dans les arcs, il est nécessaire de recalculer les alignements entre les deux séquences. Cela se fait via le biais de la fonction \emph{getAlignement} de la classe \verb|Arc|. 
+	\item[\emph{generateAllPairs}:] Cette méthode génère toutes les paires possibles à partir d'un ensemble de séquences.
+	\item[\emph{isAcceptable}:] Pour un arc donné, cette méthode détermine si cet arc respecte les conditions d'acceptabilité expliquées ci-dessus. 
+	\item[\emph{filterArcs}:] C'est au sein de cette méthode que l'algorithme glouton est implémenté. A partir d'une liste d'arcs, on récupère les séquences ayant généré ces arcs afin de pouvoir générer la structure d'\verb|Union-find|. Deux ensembles \emph{entered} et \emph{exited} permettent de tenir à jour les \og n\oe{}uds \fg~dans lesquels on est rentré ou sorti. Une autre structure \emph{comp} permet de déterminer si on a déjà utilisé un fragment et si oui, s'il est utilisé sous sa forme complémentée inversée ou pas. L'algorithme choisit à chaque fois l'arc de poids le plus élevé et teste s'il est acceptable. Si oui,cet arc est ajouté pour la construction du chemin hamiltonien et on met à jour toutes les structures décrites précédemment. Nous avons ainsi un ensemble d'arcs formant un chemin hamiltonien, mais nous ne savons pas encore dans quel ordre les agencer afin de construire ce chemin.
+	\item[\emph{hamiltonianPath}:] A partir de l'ensemble des arcs acceptés par la méthode \emph{filterArcs} reconstruit le chemin hamiltonien.
+	\item[\emph{greedy}:] Cette méthode utilise toutes les méthodes précédentes. Elle commence par générer toutes les paires de séquences possibles. A partir de ces paires, elle construit les arcs. C'est à ce moment que le travail est le plus couteux (car il demande de calculer les matrices de similarité). C'est pourquoi, cette étape est parallélisée . Nous avons ensuite la possibilité de retenir certains arcs selon certains critères. Nous avons essayé en rejetant les arcs qui correspondaient à un alignement de type \og inside \fg. Les tests effectués après cette modification semblant donner des résultats moins bons que ceux où les alignements de type \og inside \fg~n'étaient pas écartés, cette alternative n'a pas été retenue. Le chemin hamiltonien d'arcs est ensuite construit. Toutefois, les alignements n'étant pas stockés dans les arcs, il est nécessaire de recalculer les alignements entre les deux séquences. Cela se fait via le biais de la fonction \emph{getAlignement} de la classe \verb|Arc|. 
 	Ensuite, le chemin hamiltonien d'alignement de séquences est renvoyé et est ainsi prêt à être utilisé pour retrouver la séquence finale.	
 \end{description}
 
@@ -173,16 +173,16 @@ La mise en \oe{}uvre de l'algorithme se trouve dans la classe \verb|Greedy|. Nou
 
 Nous avons basé notre implémentation et nos explications sur la page : \url{https://fr.wikipedia.org/wiki/Union-Find}
 
-Une structure de donnée \og Union-Find \fg~est une structure permettant de représenter une relation d'équivalence . On peut effectuer trois opérations sur cette structure:
+Une structure de données \og Union-Find \fg~est une structure permettant de représenter une relation d'équivalence . On peut effectuer trois opérations sur cette structure:
 \begin{itemize}
 \item[$\bullet$] L'opération \emph{Find} permet de déterminer dans quelle classe d'équivalence se situe un élément.
 \item[$\bullet$] L'opération \emph{Union} permet de faire l'union entre deux classes d'équivalence.
-\item[$\bullet$] L'opération \emph{MakeSet} construit une classe d'équivalence qui ne contient qu'un seul élément
+\item[$\bullet$] L'opération \emph{MakeSet} construit une classe d'équivalence qui ne contient qu'un seul élément.
 \end{itemize}
 
 Dans l'implémentation que nous avons utilisée, chaque classe d'équivalence est représentée par un arbre pour lequel chaque noeud possède une référence vers son père. Dans un tel choix d'implémentation, la racine de chaque classe correspond au représentant de la classe d'équivalence.
 
-L'opération \emph{Find} retourne la racine de l'arbre et donc détermine quel est le représentant de la classe d'équivalence. Pour l'opération \textsc{Union}, on rattache la racine d'une des deux classes à celle de l'autre classe. Toutefois, une telle démarche pourrait amener à des arbres fortement déséquilibrés . Afin d'éviter cela, une heuristique sur la hauteur de l'arbre est utilisée. On retient le \emph{rang} de l'arbre et, à chaque fois que l'on veut faire l'union de deux arbres, on considère leur rang. On attache l'arbre de rang inférieur à la racine de l'arbre de rang supérieur. Les arbres qui ne contiennent qu'un seul élément sont de rang 0 et dès que l'on effectue l'union de deux arbres de même rang, le résultat de cette union a un rang d'une unité plus grand.
+L'opération \emph{Find} retourne la racine de l'arbre et donc détermine quel est le représentant de la classe d'équivalence. Pour l'opération \textsc{Union}, on rattache la racine d'une des deux classes à celle de l'autre classe. Toutefois, une telle démarche pourrait amener à des arbres fortement déséquilibrés . Afin d'éviter cela, une heuristique sur la hauteur de l'arbre est utilisée. On retient le \emph{rang} de l'arbre et, à chaque fois que l'on veut faire l'union de deux arbres, on considère leur rang. On attache l'arbre de rang inférieur à la racine de l'arbre de rang supérieur. Les arbres qui ne contiennent qu'un seul élément sont de rang 0 et dès que l'on effectue l'union de deux arbres de même rang, le résultat de cette union a un rang plus grand d'une unité .
 
 La complexité amortie pour les opérations sur cette structure  est en $\mathcal{O}(\alpha (n))$ où $\alpha(n)$ est l'inverse de la fonction $f(x) = A(x,x)$ où $A$ est la fonction de Ackermann dont la croissance est très rapide. En pratique, $\alpha(n)$ vaut moins de 5 pour toute valeur de $n$. Dès lors, la complexité amortie des opérations sur Union-Find peut être considérée comme pratiquement constante.
 
