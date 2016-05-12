@@ -66,6 +66,6 @@ Liste des résultats du dotmatcher
 ## Todo
 
 * [ ] Lister les autres essais qu'on a fait.
-* [ ] Lister les complexités ?
-* [ ] Quand backtrack, on prend quel jmax et quel imax ? Le plus à gauche ou le
+* [x] Lister les complexités ?
+* [x] Quand backtrack, on prend quel jmax et quel imax ? Le plus à gauche ou le
   plus à droite ? Le plus en haut ou le plus en bas ?
