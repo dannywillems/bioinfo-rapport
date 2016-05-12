@@ -77,8 +77,11 @@ l'insertion de gaps ne demande pas plus d'espace mémoire: qu'importe si nous
 devons insérer $2$ gaps ou $10000$ gaps car nous ne faisons qu'augmenter la case
 correspondante du tableau \verb|nb_gaps|. \footnote{Avec la représentation sous
 	forme de byte (1 octet en Java), cette nouvelle abstraction est intéressante
-si nous devons ajouter plus de 7 gaps entre chaque nucléotide, ce qui peut arriver si nous travaillons sur de grandes séquences.} La
-plupart des méthodes ont alors une complexité relative à la taille de la
+si nous devons ajouter plus de 7 gaps entre chaque nucléotide (ce qui ferait un
+total de 8 octets, la taille que prend la nouvelle abstaction quelque soit le
+nombre de gaps), ce qui peut
+arriver si nous travaillons sur de grandes séquences.} La plupart des méthodes
+ont alors une complexité relative à la taille de la
 séquence \textit{initiale}, et non la séquence alignée et vu que l'insertion de
 gaps ne modifie jamais la taille de la séquence initiale, nous
 gardons toujours une complexité relative à la taille de la séquence initiale, ce
@@ -87,7 +90,8 @@ qui est avantageux dans le cas d'insertions de très grands nombres de gaps.
 Un autre point positif est qu'il est très facile de connaitre la position où nous
 devons insérer des gaps s'il nous est demandé de rajouter $n$ gaps entre deux
 nucléotides: il suffit de connaitre la position du nucléotide dans la chaine
-initiale après lequel nous devons ajouter les $n$ gaps.
+initiale après lequel nous devons ajouter les $n$ gaps. Ce point sera utlisé
+lors de la propagation de gaps dans la section \ref{propagation_gaps}.
 
 Nous gardons également un attribut contenant l'offset de la séquence dans le
 chemin hamiltonien, c'est-à-dire le décalage vers la droite du début de la
@@ -96,7 +100,39 @@ La position relative d'un élément dans une séquence est la position de l'él�
 sans l'offset tandis que la position absolue est la position en prenant compte
 de l'offset.
 
-\begin{exemple}
+\begin{exemple} [Offset]
+	Supposons que l'algorithme glouton nous renvoie les alignements
+
+	\verb|   A-TGC-|
+
+	\verb|ATTAATGCT|
+
+	et
+
+	\verb|ATTAATG-CT|
+
+	\verb|   AATGTCT|
+
+	ce qui donne, quand nous alignons la deuxième et troisième séquence,
+
+	\verb|   A-TGC-|
+
+	\verb|ATTAATGCT|
+
+	\verb|ATTAATG-CT|
+
+	\verb|   AATGTCT|
+
+	La deuxième et troisième séquence ont un offset de 0 (car ce sont elles qui
+	sont le plus à gauche), tandis que la première et la dernière ont un offset
+	de 3 car elles sont décalées de 3 vers la droite.
+
+	Lors du calcul de l'alignement, nous devrons nous souvenir de ces offsets.
+	Nous nous servirons alors de la méthode \verb|updateOffset| qui aura pour
+	but de mettre à jour l'attribut offset.
+\end{exemple}
+
+\begin{exemple} [Position relative et absolue]
 	Soit la séquence \verb|A--T-G-C| et considérons un offset de 4, c'est-à-dire
 	que 'réellement', la séquence est \verb|----A--T-G-C|.
 
@@ -105,8 +141,9 @@ de l'offset.
 	l'élément à la position absolue 3 étant le dernier gap avant le \verb|A|.
 \end{exemple}
 
-Cette distinction est à faire car lorsque nous devons propager des gaps, nous
-devons considérer cet offset, c'est-à-dire travailler avec la position absolue.
+Cette distinction est à faire car lorsque nous devons propager des gaps (voir
+\ref{propagation_gaps}), nous devons considérer cet offset, c'est-à-dire
+travailler avec la position absolue.
 
 Par la suite, nous travaillerons toujours avec la position \textit{absolue}.
 
@@ -153,6 +190,7 @@ Les autres méthodes utilisées sont:
 \end{description}
 
 \subsubsection{Propagation des gaps}
+\label{propagation_gaps}
 
 Comme expliqué précédemment, la propagation des gaps se fait en deux temps: vers
 le bas puis vers le haut.
