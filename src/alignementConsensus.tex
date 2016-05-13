@@ -64,7 +64,7 @@ nombre de gaps suivant celui-ci.\footnote{Une même représentation peut être
 l'implémentation des méthodes.}
 
 Par exemple, la séquence \verb|A--T-G-C| est représentée par une séquence
-\verb|ATGC| et par un tableau nommé \emph{$nb_gaps$} de taille 4
+\verb|ATGC| et par un tableau nommé \emph{nb\_gaps} de taille 4
 contenant les entiers {2, 1, 1, 0} car il y a deux gaps après le premier
 nucléotide, un gap après le second, un après le troisième, et 0 à la fin. Les
 complexités en temps et en mémoire sont ainsi diminuées car la plupart des
@@ -80,7 +80,7 @@ obtiendrons alors le tableau {3, 1, 1, 0}. Cet ajout de gap peut se faire en
 $O(n)$ où $n$ est la taille de la séquence \textit{initiale}. De plus,
 l'insertion de gaps ne demande pas plus d'espace mémoire: qu'importe le nombre
 de gaps, nous ne faisons qu'augmenter la case
-correspondante du tableau \emph{$nb_gaps$}. \footnote{Avec la représentation sous
+correspondante du tableau \emph{nb\_gaps}. \footnote{Avec la représentation sous
 	forme de byte (1 octet en Java), cette nouvelle abstraction est intéressante
 si nous devons ajouter plus de 7 gaps entre chaque nucléotide (ce qui ferait un
 total de 8 octets, la taille que prend la nouvelle abstaction quelque soit le
@@ -169,7 +169,7 @@ Les autres méthodes utilisées sont:
 \begin{description}
 	\item[\emph{getSize}]: Récupère la taille de la séquence. La taille est
 		contenue dans un attribut \emph{size} qui est mis à jour à chaque fois
-		qu'on ajoute des éléments et cette mise à jour se fait en O(1). Cette
+		que nous ajoutons des éléments et cette mise à jour se fait en O(1). Cette
 		implémentation permet de garder une complexité en O(1) et de diminuer la
 		complexité de \emph{addEndGaps} dans \verb|ConsensusAbstract| par
 		exemple.
@@ -180,13 +180,14 @@ Les autres méthodes utilisées sont:
 		\textit{alignée}.
 	\item[\emph{addGapsAndReturnIndice}]: insère $n$ gaps à
 			une position (absolue) donnée et retourne l'indice (dans la séquence
-			initiale) du nucléotide après lequel les gaps ont été inséré, le
+			initiale) du nucléotide après lequel les gaps ont été insérés, le
 			tout en $O(m)$ où $m$ est la taille de la séquence initiale. Le
 			retour de la fonction est utile pour la propagation entre deux
 			séquences provenant d'une même séquence initiale quand on doit
 			connaître entre quels nucléotides nous avons inséré les gaps.
 	\item[\emph{addGapsAfterIndiceAndReturnPosition}]: insère $n$ gaps après
-		le nucléotide se trouvant à l'indice donné dans la séquence initiale.
+		le nucléotide se trouvant à l'indice donné dans la séquence initiale et
+		retourne la position absolue où les gaps ont été insérés.
 		Cette méthode est utilisée quand nous devons propager des gaps entre
 		deux séquences ne provenant pas de la même séquence initiale et que nous
 		devons connaitre alors la position où les gaps ont été insérés. La
@@ -218,15 +219,16 @@ Les méthodes s'en chargeant sont
 sensiblement les mêmes pour le bas et le haut, nous décrivons uniquement la
 propagation vers le bas.
 
-Dans \verb|computeAlignment|, nous parcourons chaque paire $P_{i}$ du chemin
+Dans \emph{computeAlignment}, nous parcourons chaque paire $P_{i}$ du chemin
 hamiltonien et faisons appel à \emph{propageGapsDownFrom} en envoyant comme
 paramètre l'indice $i$. Comme expliqué précédemment, il faut regarder la
 séquence $t_{i}$ se trouvant en seconde position dans la paire $P_{i}$ et celle en
-première position de la paire $P_{i + 1}$, notée $s_{i + 1}$, et parcourir chaque nucléotide en
-propageant vers le bas la différence de gaps (nous rappelons que $t_{i}$ et
-$s_{i + 1}$ proviennent de la même séquence initiale et ont donc les mêmes
-nucléotides, la différence se situant dans le nombre de gaps entre
-chacun d'entres eux) si $t_{i}$ comporte plus de gaps que $s_{i + 1}$.
+première position de la paire $P_{i + 1}$, notée $s_{i + 1}$, et parcourir
+chaque nucléotide en propageant vers le bas la différence de gaps si $t_{i}$
+comporte plus de gaps que $s_{i + 1}$. Nous rappelons que $t_{i}$ et $s_{i +
+1}$ proviennent de la même séquence initiale et ont donc les mêmes nucléotides,
+la différence entre ces deux séquences se situant dans le nombre de gaps entre
+chacun d'entres eux.
 
 S'il y a plus de gaps dans $t_{i}$ que dans $s_{i + 1}$ entre les
 nucléotides $n_{k}$ et $n_{k + 1}$ (ce que nous pouvons savoir en $O(1)$ grâce à
@@ -249,15 +251,16 @@ L'insertion se fait de manière récursive sur $j$:
 		devons insérer les gaps entre les deux nucléotides $n_{k}$ et $n_{k +
 		1}$ de $s_{i + 1}$. Cette insertion se fait grâce à la méthode
 		\emph{addGapsAfterIndiceAndReturnPosition} sur $s_{i + 1}$ (en $O(m)$,
-		$m$ étant la taille de la séquence initiale d'où provient $t_{i}$) et on
-		récupère en plus la position absolue d'insertion (ce qui génère le $m$
-		dans la complexité de la méthode car nous devons calculer à la volée la
-		position absolue). Cette position absolue va permettre de savoir où il
-		faut propager les gaps dans la séquence $t_{i + 1}$. Grâce à cette
-		position $p$, on utilise la méthode \emph{addGapsAndReturnIndice} sur $t_{i
-		+ 1}$ pour insérer les gaps à la position $p$, et nous récupérons en
-		même temps l'indice du nucléotide de $t_{i + 1}$ après lequel les gaps
-		ont été ajoutés. Cette dernière méthode est également en $O(m)$,
+		$m$ étant la taille de la séquence initiale d'où provient $t_{i}$) et
+		nous récupérons en plus la position absolue d'insertion (ce qui génère
+		le $m$ dans la complexité de la méthode car nous devons calculer à la
+		volée la position absolue). Cette position absolue va permettre de
+		savoir où il faut propager les gaps dans la séquence $t_{i + 1}$. Grâce
+		à cette position $p$, nous utilisons la méthode
+		\emph{addGapsAndReturnIndice} sur $t_{i + 1}$ pour insérer les gaps à la
+		position $p$, et nous récupérons en même temps l'indice du nucléotide de
+		$t_{i + 1}$ après lequel les gaps ont été ajoutés. Cette dernière
+		méthode est également en $O(m)$,
 		toujours pour la même raison que précédemment.
 	\item[$\bullet$] Pour $j > i + 1$, nous répétons l'opération du cas de base mais cette
 		fois-ci, nous utilisons l'indice que la méthode
@@ -281,7 +284,7 @@ les gaps finaux des séquences pour que toutes les séquences aient la même
 longueur. Ce calcul est fait par \emph{addEndGaps} et se déroule en $O(k)$ où
 $k$ est le nombre initial de séquences. Cette méthode se charge de calculer la
 taille de la plus longue séquence (en $O(k)$ car \emph{getSize} est en $O(1)$)
-et elle ajoute le nombre de gaps dans le tableau \emph{$nb_gaps$} pour chaque
+et elle ajoute le nombre de gaps dans le tableau \emph{nb\_gaps} pour chaque
 séquence. Ce nombre de gaps à ajouter à la séquence courante est égale à la
 taille maximale moins la taille de la séquence courante.
 
