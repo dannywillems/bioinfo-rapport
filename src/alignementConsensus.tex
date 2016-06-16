@@ -267,16 +267,16 @@ L'insertion se fait de manière récursive sur $j$:
 		\emph{addGapsAndReturnIndice} nous a renvoyé à l'étape $j - 1$.
 \end{itemize}
 
-Pour un appel à \emph{propageGapsUpFromPosition}, nous obtenons donc une
+Pour un appel à \emph{propageGapsDownFromPosition}, nous obtenons donc une
 complexité en $O( (k - i) M_{i})$ où $M_{i}$ est la taille de la plus grande
 séquence du chemin, $k$ le nombre initial de séquence et $i$ la position de
 début de l'insertion.
 
 Cela entraine donc une complexité en $O( (k - i) M_{i}^{2})$ pour
 \emph{propageGapsDownFrom} car nous faisons appel, pour chaque nucléotide de
-$t_{i}$ (dans le pire des cas), à la méthode \-\emph{propageGapsUpFromPosition}.
+$t_{i}$ (dans le pire des cas), à la méthode \-\emph{propageGapsDownFromPosition}.
 Par conséquence, comme \emph{propageGapsDown} parcourt toutes les paires en
-faisant appel à \emph{propageGapsDown}, nous obtenons une complexité finale de
+faisant appel à \emph{propageGapsDownFrom}, nous obtenons une complexité finale de
 $O(k^{2} M_{i}^{2})$.
 
 Pour simplifier le calcul du consensus à la dernière étape, nous mettons à jour
